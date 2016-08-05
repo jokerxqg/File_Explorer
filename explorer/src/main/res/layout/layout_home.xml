@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar_color"
+        app:title="@string/menu_home"
+        app:titleTextAppearance="@style/Toolbar_Title_Text">
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/ic_search_black_24dp" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        android:id="@+id/toolbar_line"
+        style="@style/Toolbar_line_Style" />
+
+    <!--主页面的布局，分别给gridlayout 和扩展功能，和底部的显示存储权重 比例为6:1:!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_line"
+        android:orientation="vertical">
+
+
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/grid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5.8"
+            android:background="@color/dark_gray"
+            app:columnCount="3"
+            app:rowCount="3">
+
+            <Button
+                android:id="@+id/btn_movie"
+                style="@style/Grid_Style"
+                android:drawableTop="@mipmap/filesystem_grid_icon_movie"
+                android:text="@string/grid_movie"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_photo"
+                style="@style/Grid_Style"
+                android:drawableTop="@mipmap/filesystem_grid_icon_photo"
+                android:text="@string/grid_photo"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_music"
+                style="@style/Grid_Style"
+                android:drawableTop="@mipmap/filesystem_grid_icon_music"
+                android:text="@string/grid_music"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_apk"
+                style="@style/Grid_Style"
+                android:drawableTop="@mipmap/filesystem_grid_icon_apk"
+                android:text="@string/grid_apk"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_zip"
+                style="@style/Grid_Style"
+                android:drawableTop="@mipmap/filesystem_grid_icon_zip"
+                android:text="@string/grid_zip"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_text"
+                style="@style/Grid_Style"
+                android:drawableTop="@mipmap/filesystem_grid_icon_text"
+                android:text="@string/grid_text"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_favorite"
+                style="@style/Grid_Style"
+                android:layout_marginBottom="0dp"
+                android:drawableTop="@mipmap/filesystem_grid_icon_favorite"
+                android:text="@string/grid_favorite"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_download"
+                style="@style/Grid_Style"
+                android:layout_marginBottom="0dp"
+                android:drawableTop="@mipmap/filesystem_grid_icon_download"
+                android:text="@string/grid_download"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+            <Button
+                android:id="@+id/btn_last_add"
+                style="@style/Grid_Style"
+                android:layout_marginBottom="0dp"
+                android:drawableTop="@mipmap/filesystem_grid_last_add"
+                android:text="@string/grid_last_add"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal|fill_vertical"
+                app:layout_rowWeight="1" />
+
+
+        </android.support.v7.widget.GridLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:background="@color/background_light">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_all_file"
+                    style="@style/Extra_Button_Style"
+                    android:drawableTop="@mipmap/ic_all_file"
+                    android:text="@string/extra_all_file" />
+
+                <Button
+                    android:id="@+id/btn_cloud"
+                    style="@style/Extra_Button_Style"
+                    android:layout_toRightOf="@id/btn_all_file"
+                    android:drawableTop="@mipmap/ic_cloud"
+                    android:text="@string/extra_could" />
+
+                <Button
+                    android:id="@+id/btn_remote"
+                    style="@style/Extra_Button_Style"
+                    android:layout_toRightOf="@id/btn_cloud"
+                    android:drawableTop="@mipmap/ic_remote"
+                    android:text="@string/extra_remote" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <RelativeLayout
+            android:id="@+id/end_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.9"
+            android:background="@color/background_light">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/iv_storage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:src="@mipmap/sdcard_icon_sdcard" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/iv_storage">
+
+                    <TextView
+                        android:id="@+id/tv_show"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="15dp"
+                        android:text="1111"
+                        android:textSize="13sp" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

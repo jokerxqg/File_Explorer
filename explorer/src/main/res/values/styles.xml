@@ -1,0 +1,45 @@
+<resources>
+
+    <!-- 应用程序的主题 -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/toolbar_color</item>
+        <item name="colorAccent">@color/black</item>
+        <item name="colorControlNormal">@color/black</item>
+    </style>
+
+    <!--toolbar字体的大小设置-->
+    <style name="Toolbar_Title_Text">
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!--toolbar下面的那条线的样式-->
+    <style name="Toolbar_line_Style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_below">@id/toolbar</item>
+        <item name="android:background">@color/dark_gray</item>
+    </style>
+
+    <!--主界面网格button的样式-->
+    <style name="Grid_Style">
+        <item name="android:layout_marginRight">1px</item>
+        <item name="android:layout_marginBottom">1px</item>
+        <item name="android:background">@color/background_light</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:drawablePadding">15dp</item>
+    </style>
+
+    <!--扩展按钮的样式-->
+    <style name="Extra_Button_Style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
+</resources>
