@@ -1,5 +1,6 @@
 package com.joker.explorer.activity;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.joker.explorer.R;
 
 
+import fragment.HomeFragment;
 import utils.FileSizeUtils;
 import utils.FinshActivity;
 import utils.JumpAct;
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         finshActivity.addActivity(this);
 
         btn_all_file = (Button) findViewById(R.id.btn_all_file);
-        btn_all_file.setOnClickListener(this );
+        btn_all_file.setOnClickListener(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         end_layout = (RelativeLayout) findViewById(R.id.end_layout);
         end_layout.setOnClickListener(this);
+
+
     }
 
     /*

@@ -29,4 +29,6 @@
     <!--关于邮箱地址-->
     <string name="author_email">邮箱：jokerxqg@outlook.com</string>
 
+    <string name="not_file">无文件</string>
+
 </resources>

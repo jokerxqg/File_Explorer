@@ -18,7 +18,7 @@
 
     <View
         android:id="@+id/toolbar_line"
-        style="@style/Toolbar_line_Style" />
+        style="@style/Line_Style" />
 
     <ImageView
         android:id="@+id/iv_head_author"
