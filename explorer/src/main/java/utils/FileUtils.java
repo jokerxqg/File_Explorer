@@ -18,7 +18,7 @@ import fixed.FileType;
 
 /**
  * 文件处理的工具类
- * <p/>
+ * <p>
  * Created by joker on 2016/8/9.
  */
 public class FileUtils {
@@ -67,6 +67,47 @@ public class FileUtils {
 
 
         return folderList;
+    }
+
+    /*
+    * 删除文件或文件夹的方法
+    * */
+    public static void deleteDirectory(File file) {
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                File[] files = file.listFiles(); // 声明目录下所有的文件 files[];
+                for (int i = 0; i < files.length; i++) { // 遍历目录下所有的文件
+                    deleteDirectory(files[i]); // 把每个文件 用这个方法进行迭代
+                }
+            }
+            file.delete();
+        }
+    }
+
+    /*
+    * 重命名文件
+    * */
+    public static void reNameFile(File oldFile, File newFile) {
+        if (oldFile.exists()) {
+            oldFile.renameTo(newFile);
+        }
+    }
+
+
+
+    /*
+    * 新建一个文件夹
+    * 参数  path 当前的绝对路径
+    * */
+
+    public static void makeDirectory(String path) {
+        File file = new File(path);
+
+        if (!file.exists()) {
+            file.mkdir();
+        }
     }
 
 
@@ -257,12 +298,5 @@ public class FileUtils {
         return imageId;
     }
 
-    public static void makeDirectory(String path){
-        File file = new File(path);
-
-        if(!file.exists()){
-            file.mkdir();
-        }
-    }
 
 }

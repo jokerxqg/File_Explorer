@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import com.joker.explorer.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bean.Folder;
 import fixed.FileType;
@@ -46,8 +48,8 @@ public class FolderAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
 
         if (convertView == null) {
             holder = new ViewHolder();
@@ -82,7 +84,11 @@ public class FolderAdapter extends BaseAdapter {
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                folder.setChecked(true);
+                if (holder.checkBox.isChecked()) {
+                    folderList.get(position).setChecked(true);
+                } else {
+                    folderList.get(position).setChecked(false);
+                }
             }
         });
 
