@@ -46,10 +46,10 @@
             app:rowCount="3">
 
             <Button
-                android:id="@+id/btn_movie"
+                android:id="@+id/btn_video"
                 style="@style/Grid_Style"
                 android:drawableTop="@mipmap/filesystem_grid_icon_movie"
-                android:text="@string/grid_movie"
+                android:text="@string/movie"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -58,7 +58,7 @@
                 android:id="@+id/btn_photo"
                 style="@style/Grid_Style"
                 android:drawableTop="@mipmap/filesystem_grid_icon_photo"
-                android:text="@string/grid_photo"
+                android:text="@string/photo"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -67,7 +67,7 @@
                 android:id="@+id/btn_music"
                 style="@style/Grid_Style"
                 android:drawableTop="@mipmap/filesystem_grid_icon_music"
-                android:text="@string/grid_music"
+                android:text="@string/music"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -76,7 +76,7 @@
                 android:id="@+id/btn_apk"
                 style="@style/Grid_Style"
                 android:drawableTop="@mipmap/filesystem_grid_icon_apk"
-                android:text="@string/grid_apk"
+                android:text="@string/apk"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -85,7 +85,7 @@
                 android:id="@+id/btn_zip"
                 style="@style/Grid_Style"
                 android:drawableTop="@mipmap/filesystem_grid_icon_zip"
-                android:text="@string/grid_zip"
+                android:text="@string/zip"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -94,7 +94,7 @@
                 android:id="@+id/btn_text"
                 style="@style/Grid_Style"
                 android:drawableTop="@mipmap/filesystem_grid_icon_text"
-                android:text="@string/grid_text"
+                android:text="@string/text"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -104,7 +104,7 @@
                 style="@style/Grid_Style"
                 android:layout_marginBottom="0dp"
                 android:drawableTop="@mipmap/filesystem_grid_icon_favorite"
-                android:text="@string/grid_favorite"
+                android:text="@string/favorite"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -114,7 +114,7 @@
                 style="@style/Grid_Style"
                 android:layout_marginBottom="0dp"
                 android:drawableTop="@mipmap/filesystem_grid_icon_download"
-                android:text="@string/grid_download"
+                android:text="@string/download"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -124,7 +124,7 @@
                 style="@style/Grid_Style"
                 android:layout_marginBottom="0dp"
                 android:drawableTop="@mipmap/filesystem_grid_last_add"
-                android:text="@string/grid_last_add"
+                android:text="@string/last_add"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />
@@ -154,22 +154,23 @@
                 <Button
                     android:id="@+id/btn_all_file"
                     style="@style/Extra_Button_Style"
-                    android:drawableTop="@mipmap/ic_all_file"
-                    android:text="@string/extra_all_file" />
+                    android:drawableTop="@mipmap/ic_dis"
+                    android:text="@string/all_file" />
 
                 <Button
-                    android:id="@+id/btn_cloud"
+                    android:id="@+id/btn_about_me"
                     style="@style/Extra_Button_Style"
                     android:layout_toRightOf="@id/btn_all_file"
-                    android:drawableTop="@mipmap/ic_cloud"
-                    android:text="@string/extra_could" />
+                    android:drawableTop="@mipmap/ic_about_me"
+                    android:text="@string/about_me" />
+
 
                 <Button
-                    android:id="@+id/btn_remote"
+                    android:id="@+id/btn_setting"
                     style="@style/Extra_Button_Style"
-                    android:layout_toRightOf="@id/btn_cloud"
-                    android:drawableTop="@mipmap/ic_remote"
-                    android:text="@string/extra_remote" />
+                    android:drawablePadding="3dp"
+                    android:drawableTop="@mipmap/ic_setting"
+                    android:text="@string/setting" />
 
             </LinearLayout>
 

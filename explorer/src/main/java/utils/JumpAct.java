@@ -7,6 +7,7 @@ import android.provider.Settings;
 import com.joker.explorer.activity.AboutMeActivity;
 import com.joker.explorer.activity.InternalStorageActivity;
 import com.joker.explorer.activity.MainActivity;
+import com.joker.explorer.activity.SettingActivity;
 
 /**
  * Created by joker on 2016/8/2/002.
@@ -27,19 +28,15 @@ public class JumpAct {
     public void jumpToInternalStorage() {
         Intent intent = new Intent(activity, InternalStorageActivity.class);
         activity.startActivity(intent);
-        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     public void jumpToAboutMe() {
         Intent intent = new Intent(activity, AboutMeActivity.class);
         activity.startActivity(intent);
-        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    public void jumpToHome() {
-        Intent intent = new Intent(activity, MainActivity.class);
+    public void jumpToSetting(){
+        Intent intent = new Intent(activity,SettingActivity.class);
         activity.startActivity(intent);
     }
-
-
 }

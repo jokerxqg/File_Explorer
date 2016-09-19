@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="320dp"
+    android:layout_height="300dp"
+    android:layout_gravity="center"
+    android:background="@color/dark_gray"
+    tools:context="com.joker.explorer.activity.OperateDialogActivity">
+
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:columnCount="2"
+        app:rowCount="4">
+
+        <Button
+            style="@style/Operate_Dialog_Style"
+            android:text="@string/operate"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            style="@style/Operate_Dialog_Style"
+            android:text="@string/order"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/btn_done_all"
+            style="@style/Operate_Dialog_Style"
+            android:text="@string/done_all"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/btn_order_az"
+            style="@style/Operate_Dialog_Style"
+            android:text="@string/order_a_z"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/btn_cancel_all"
+            style="@style/Operate_Dialog_Style"
+            android:text="@string/cancel_done_all"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/btn_old_new"
+            style="@style/Operate_Dialog_Style"
+            android:text="@string/order_old_new"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/btn_delete"
+            style="@style/Operate_Dialog_Style"
+            android:layout_marginBottom="0px"
+            android:text="@string/delete"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+        <Button
+            android:id="@+id/btn_default_order"
+            style="@style/Operate_Dialog_Style"
+            android:layout_marginBottom="0px"
+            android:text="@string/default_order"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1" />
+
+    </android.support.v7.widget.GridLayout>
+
+
+</RelativeLayout>

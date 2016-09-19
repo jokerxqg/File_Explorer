@@ -2,6 +2,7 @@ package bean;
 
 /**
  * Created by joker on 2016/8/8.
+ * 文件夹的bean
  */
 public class Folder {
     private String folderName;
@@ -11,6 +12,16 @@ public class Folder {
     private boolean isFile;
     private boolean isDirectory;
     private String folderPath;
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    private String fileSize = "0K";
 
     public String getFolderPath() {
         return folderPath;

@@ -1,34 +1,24 @@
 package com.joker.explorer.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joker.explorer.R;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,10 +27,9 @@ import java.util.List;
 import adapter.FolderAdapter;
 import bean.Folder;
 import fixed.FileType;
+import fixed.OperateCode;
 import utils.FileUtils;
-import utils.FinshActivity;
-import utils.JumpAct;
-
+import utils.FinishActivity;
 /*
 * 内部存储的act
 * */
@@ -49,7 +38,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     //   toolbar 上会显示文件路径
     private Toolbar toolbar;
     //    文件操作的功能模块按钮
-    private ImageButton iv_fileFunction;
+    private ImageButton ic_fileOperate;
     //    新建一个目录的按钮
     private ImageButton iv_newFolder;
     //    显示文件链表的listview
@@ -68,24 +57,62 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     private AlertDialog editDialog;
     //    条目长按的位置
     private int itemLongClickPosition;
-    //    长按文件获取的后缀名
+    //    文件的后缀名
     private String strSuffix = "";
+    //    点击的那个目录bean
+    private Folder clickFolder;
+
+    private final static int REQUEST_CODE = 1;
+    private String downPath;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_internal_storage);
-
         initViews();
-        currentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        readAndShow(currentPath);
 
+        Intent intent = getIntent();
+        downPath = intent.getStringExtra("DownPath");
+        if (downPath != null) {
+            currentPath = downPath;
+            readAndShow(currentPath);
+        } else {
+            currentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            readAndShow(currentPath);
+        }
+    }
+
+    /*
+   * 用户按返回键的监听
+   * 如果是在根目录，就结束这个activity
+   * 否则的话，跳到此目录的父目录
+   * */
+    @Override
+    public void onBackPressed() {
+
+        if (downPath != null) {
+            finish();
+        }
+
+        if (currentPath.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+            finish();
+        } else {
+            currentPath = new File(currentPath).getParentFile().getAbsolutePath();
+            readAndShow(currentPath);
+            list_view.setSelection(itemPosition);
+        }
 
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        clickFolder = folderList.get(itemLongClickPosition);
+        if (clickFolder.isDirectory()) {
+            menu.setHeaderTitle("操作文件夹  " + clickFolder.getFolderName());
+        } else {
+            menu.setHeaderTitle("操作文件  " + clickFolder.getFolderName());
+        }
         menu.add(1, 1, 1, "删除");
         menu.add(2, 2, 2, "重命名");
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -119,6 +146,9 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
      * 初始化控件 findviewbyid 以及绑定监听事件
      * */
     void initViews() {
+        FinishActivity finshActivity = FinishActivity.getInstance();
+        finshActivity.addActivity(this);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -127,8 +157,8 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
                 onBackPressed();
             }
         });
-        iv_fileFunction = (ImageButton) findViewById(R.id.ic_fileFunction);
-        iv_fileFunction.setOnClickListener(this);
+        ic_fileOperate = (ImageButton) findViewById(R.id.ic_fileOperate);
+        ic_fileOperate.setOnClickListener(this);
         iv_newFolder = (ImageButton) findViewById(R.id.iv_newFolder);
         iv_newFolder.setOnClickListener(this);
 
@@ -154,9 +184,13 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     * */
     void initDialog(String title, final int id, String fileName) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        View newFolderView = inflater.inflate(R.layout.edittext_folder_name, null);
-        final EditText editFolder = (EditText) newFolderView.findViewById(R.id.edit_folderName);
-        final Folder clickFolder = folderList.get(itemLongClickPosition);
+        View editView = inflater.inflate(R.layout.edittext_folder_name, null);
+        final EditText editFolder = (EditText) editView.findViewById(R.id.edit_folderName);
+
+        if (folderList.size() != 0) {
+            clickFolder = folderList.get(itemLongClickPosition);
+        }
+
         int dialogImageId = 0;
 
        /*如果是文件，并且不是未识别文件，就分割文件名，让文件名显示在edittext上，后缀名给成员变量赋值给重命名使用，否则为未识别文件
@@ -184,12 +218,13 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setIcon(dialogImageId)
-                .setView(newFolderView)
+                .setView(editView)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                         if (R.id.iv_newFolder == id) {
+//                            执行新建文件夹操作
                             String inPut = editFolder.getText().toString().trim();
                             if (!inPut.isEmpty()) {
                                 String filePath = currentPath + File.separator + inPut;
@@ -199,6 +234,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
                                 editFolder.setText("");
                             }
                         } else if (2 == id) {
+//                            执行重命名文件操作
                             String inPut = editFolder.getText().toString().trim();
                             if (!inPut.isEmpty()) {
                                 /*
@@ -225,32 +261,14 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         editDialog = builder.create();
     }
 
-    /*
-    * 用户按返回键的监听
-    * 如果是在根目录，就结束这个activity
-    * 否则的话，跳到此目录的父目录
-    * */
-    @Override
-    public void onBackPressed() {
-
-        if (currentPath.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        } else {
-            currentPath = new File(currentPath).getParentFile().getAbsolutePath();
-            readAndShow(currentPath);
-            list_view.setSelection(itemPosition);
-        }
-
-    }
-
 
     //普通控件的点击事件
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ic_fileFunction:
-
+            case R.id.ic_fileOperate:
+                Intent intent = new Intent(this, OperateDialogActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
                 break;
 
             case R.id.iv_newFolder:
@@ -264,13 +282,84 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         }
     }
 
+    /*
+    * 操作的activity dialog返回结果码来进行不同的操作
+    * */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            switch (resultCode) {
+                case OperateCode.DONE_ALL:
+                    setDoneAll(true);
+                    break;
+                case OperateCode.CANCEL_DONE_ALL:
+                    setDoneAll(false);
+                    break;
+                case OperateCode.DELETE:
+                    deleteCheckFolders();
+                    break;
+                case OperateCode.ORDER_AZ:
+
+                    FileUtils.setOrderCode(OperateCode.ORDER_AZ);
+                    readAndShow(currentPath);
+                    break;
+                case OperateCode.ORDER_OLD:
+                    FileUtils.setOrderCode(OperateCode.ORDER_OLD);
+                    readAndShow(currentPath);
+                    break;
+                case OperateCode.ORDER_DEFAULT:
+                    FileUtils.setOrderCode(OperateCode.ORDER_DEFAULT);
+                    readAndShow(currentPath);
+                    break;
+            }
+        }
+    }
 
     /*
-    * listview条目的点击事件
-    * 如果是个文件，就根据文件类型来获取打开文件的意图
-    * 如果是没有识别的文件就弹一个吐司
-    * 如果是个目录，就进入目录
+    * 删除勾选的目录
     * */
+    void deleteCheckFolders() {
+        List<Folder> checkFolders = new ArrayList<>();
+        folderList = adapter.getFolderList();
+        if (!folderList.isEmpty()) {
+            for (Folder folder : folderList) {
+                if (folder.isChecked()) {
+                    checkFolders.add(folder);
+                }
+            }
+        }
+
+        if (!checkFolders.isEmpty()) {
+            for (Folder folder : checkFolders) {
+                FileUtils.deleteDirectory(new File(folder.getFolderPath()));
+            }
+            readAndShow(currentPath);
+            refreshAdapter();
+        }
+
+    }
+
+    /*
+    * 是否全选的方法
+    * 参数 done 为true就全选，false 取消全选
+    * */
+    void setDoneAll(boolean done) {
+        folderList = adapter.getFolderList();
+        if (!folderList.isEmpty()) {
+            for (Folder folder : folderList) {
+                folder.setChecked(done);
+            }
+        }
+        refreshAdapter();
+    }
+
+    /*
+        * listview条目的点击事件
+        * 如果是个文件，就根据文件类型来获取打开文件的意图
+        * 如果是没有识别的文件就弹一个吐司
+        * 如果是个目录，就进入目录
+        * */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         itemPosition = position;
@@ -297,26 +386,27 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     *否则的话就拿到当前目录下的文件集合，并显示出来
     * */
     void readAndShow(String currentPath) {
-
         tv_notFile.setVisibility(View.INVISIBLE);
-
         File file = new File(currentPath);
-
-        if (folderList != null) {
-            folderList.clear();
-        }
-
         folderList = FileUtils.readSubDirectory(file);
 
         if (folderList.size() == 0) {
             tv_notFile.setVisibility(View.VISIBLE);
             toolbar.setTitle(currentPath);
         } else {
-            adapter = new FolderAdapter(folderList, this);
-            list_view.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-
+            if (adapter == null) {
+                adapter = new FolderAdapter(folderList, this);
+                list_view.setAdapter(adapter);
+            } else {
+                refreshAdapter();
+            }
             toolbar.setTitle(currentPath);
         }
     }
+
+    void refreshAdapter() {
+        adapter.setFolderList(folderList);
+        adapter.notifyDataSetChanged();
+    }
+
 }

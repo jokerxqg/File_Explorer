@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.joker.explorer.R;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,14 @@ public class FolderAdapter extends BaseAdapter {
 
     private List<Folder> folderList;
     private LayoutInflater layoutInflater;
+
+    public List<Folder> getFolderList() {
+        return folderList;
+    }
+
+    public void setFolderList(List<Folder> folderList) {
+        this.folderList = folderList;
+    }
 
     public FolderAdapter(List<Folder> folderList, Context context) {
         this.folderList = folderList;
@@ -58,6 +67,7 @@ public class FolderAdapter extends BaseAdapter {
             holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
             holder.iv_fileType = (ImageView) convertView.findViewById(R.id.iv_fileType);
             holder.tv_lastModified = (TextView) convertView.findViewById(R.id.tv_lastModified);
+            holder.tv_count = (TextView) convertView.findViewById(R.id.tv_count);
 
             convertView.setTag(holder);
         } else {
@@ -74,10 +84,19 @@ public class FolderAdapter extends BaseAdapter {
 
         if (folder.isDirectory()) {
             imageId = R.mipmap.ic_folder;
-        } else {
-            imageId = FileUtils.changeFileIcon(fileType);
-        }
+            File[] files = new File(folder.getFolderPath()).listFiles();
+            if(files.length>0){
+                holder.tv_count.setText(files.length+" 项目");
+            }else {
+                holder.tv_count.setText("0 项目");
+            }
 
+        }else if(folder.isFile()){
+            holder.tv_count.setText(folder.getFileSize());
+            imageId = FileUtils.changeFileIcon(fileType);
+        } else {
+            imageId = R.mipmap.filetype_error;
+        }
         holder.iv_fileType.setImageResource(imageId);
 
 
@@ -100,5 +119,6 @@ public class FolderAdapter extends BaseAdapter {
         CheckBox checkBox;
         ImageView iv_fileType;
         TextView tv_lastModified;
+        TextView tv_count;
     }
 }

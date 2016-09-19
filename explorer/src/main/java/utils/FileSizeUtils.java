@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.DecimalFormat;
 
 /**
@@ -50,5 +51,16 @@ public class FileSizeUtils {
         return convertStorage(availableBlocks * blockSize);
     }
 
+    //    获取指定文件的大小
+    public static long getFileSize(File file) throws Exception {
+        long fileSize = 0;
+        if (file.exists()) {
+            FileInputStream fis = null;
+            fis = new FileInputStream(file);
+            fileSize = fis.available();
+        }
+
+        return fileSize;
+    }
 
 }

@@ -6,41 +6,56 @@ import android.net.Uri;
 import com.joker.explorer.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import bean.Folder;
 import fixed.FileType;
+import fixed.OperateCode;
 
 /**
  * 文件处理的工具类
- * <p>
+ * <p/>
  * Created by joker on 2016/8/9.
  */
 public class FileUtils {
 
+    //    控制文件排序的变量
+    private static int orderCode = OperateCode.ORDER_DEFAULT;
+    //    文件夹的集合
+    private static List<Folder> folderList;
+
+    public static void setOrderCode(int orderCode) {
+        FileUtils.orderCode = orderCode;
+    }
+
     /*
-    * 把文件最后的修改时间格式化简单的日期
-    * time 单位为毫秒
-    * */
+        * 把文件最后的修改时间格式化简单的日期
+        * time 单位为毫秒
+        * */
     public static String formatTime(Long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);//设置为日历时间
         Date date = calendar.getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         return sdf.format(date);
     }
 
     /*
-    *根据file对象来读取子目录
+    *根据file对象来读取子目录,以及文件排序
     * */
     public static List<Folder> readSubDirectory(File file) {
-        List<Folder> folderList = new ArrayList<>();
+        folderList = new ArrayList<>();
 
 
         if (file.isDirectory()) {
@@ -50,24 +65,76 @@ public class FileUtils {
             if (files.length == 0) {
                 return folderList;
             } else {
-                for (int i = 0; i < files.length; i++) {
-                    if (!files[i].getName().subSequence(0, 1).equals(".")) {
-                        Folder folder = new Folder();
-                        folder.setFolderName(files[i].getName());
-                        folder.setLastModified(FileUtils.formatTime(files[i].lastModified()));
-                        folder.setFileType(judgeFileType(files[i].getName()));
-                        folder.setIsFile(files[i].isFile());
-                        folder.setIsDirectory(files[i].isDirectory());
-                        folder.setFolderPath(files[i].getAbsolutePath());
-                        folderList.add(folder);
-                    }
+                switch (orderCode) {
+                    case OperateCode.ORDER_DEFAULT:
+                        initFolderList(files);
+                        break;
+                    case OperateCode.ORDER_OLD:
+                        Arrays.sort(files, new Comparator<File>() {
+                            public int compare(File f1, File f2) {
+                                long diff = f1.lastModified() - f2.lastModified();
+                                if (diff > 0)
+                                    return 1;
+                                else if (diff == 0)
+                                    return 0;
+                                else
+                                    return -1;
+                            }
+
+                            public boolean equals(Object obj) {
+                                return true;
+                            }
+
+                        });
+                        initFolderList(files);
+                        break;
+                    case OperateCode.ORDER_AZ:
+                        Collections.sort(Arrays.asList(files), new Comparator<File>() {
+                            @Override
+                            public int compare(File o1, File o2) {
+                                if (o1.isDirectory() && o2.isFile())
+                                    return -1;
+                                if (o1.isFile() && o2.isDirectory())
+                                    return 1;
+                                return o1.getName().compareTo(o2.getName());
+                            }
+                        });
+                        initFolderList(files);
+                        break;
                 }
+
             }
         }
 
 
         return folderList;
     }
+
+    //    装载目录的集合，初始化集合数据
+    static void initFolderList(File[] files) {
+        for (File file : files) {
+            if (!file.getName().subSequence(0, 1).equals(".")) {
+                Folder folder = new Folder();
+                folder.setFolderName(file.getName());
+                folder.setLastModified(FileUtils.formatTime(file.lastModified()));
+//
+                folder.setFileType(judgeFileType(file.getName()));
+                folder.setIsFile(file.isFile());
+                folder.setIsDirectory(file.isDirectory());
+                folder.setFolderPath(file.getAbsolutePath());
+                if (file.isFile()) {
+                    try {
+                        folder.setFileSize(FileSizeUtils.convertStorage(FileSizeUtils.getFileSize(file)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                folderList.add(folder);
+            }
+
+        }
+    }
+
 
     /*
     * 删除文件或文件夹的方法
@@ -116,6 +183,7 @@ public class FileUtils {
     * */
     static String judgeFileType(String fileName) {
         String fileType = "";
+//        获取后缀名
         String suffixStr = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()).toLowerCase();
         fileType = suffixStr.endsWith("docx") ? FileType.DOC_FILE
                 : suffixStr.endsWith("xlsx") ? FileType.EXCEL_FILE
@@ -141,7 +209,7 @@ public class FileUtils {
     }
 
     /*
-    * 根据文件类型返回不同的系统意图
+    * 根据文件类型返回不同的系统意图，然后启动意图
     * */
     public static Intent getFileIntent(String fileType, String filePath) {
         Intent intent = new Intent();

@@ -8,31 +8,31 @@ import java.util.LinkedList;
 /**
  * Created by joker on 2016/8/2/002.
  */
-public class FinshActivity {
+public class FinishActivity {
 
 
     private LinkedList<Activity> activityLinkedList = new LinkedList<Activity>();
 
-    private FinshActivity() {
+    public FinishActivity() {
     }
 
-    private static FinshActivity instance;
+    private static FinishActivity instance;
 
-    public static FinshActivity getInstance() {
+    public static FinishActivity getInstance() {
         if (null == instance) {
-            instance = new FinshActivity();
+            instance = new FinishActivity();
         }
         return instance;
     }
 
     //向list中添加Activity
-    public FinshActivity addActivity(Activity activity) {
+    public FinishActivity addActivity(Activity activity) {
         activityLinkedList.add(activity);
         return instance;
     }
 
     //结束特定的Activity(s)
-    public FinshActivity finshActivities(Class<? extends Activity>... activityClasses) {
+    public FinishActivity finshActivities(Class<? extends Activity>... activityClasses) {
         for (Activity activity : activityLinkedList) {
             if (Arrays.asList(activityClasses).contains(activity.getClass())) {
 
@@ -43,7 +43,7 @@ public class FinshActivity {
     }
 
     //结束所有的Activities
-    public FinshActivity finshAllActivities() {
+    public FinishActivity finshAllActivities() {
         for (Activity activity : activityLinkedList) {
             activity.finish();
         }

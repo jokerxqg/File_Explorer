@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
-    tools:context=".activity.AboutMeActivity">
+    tools:context="com.joker.explorer.activity.SettingActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -13,24 +12,22 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/toolbar_color"
         app:navigationIcon="@mipmap/ic_arrow_back_black_24dp"
-        app:title="关于" />
+        app:title="设置" />
 
     <View
         android:id="@+id/toolbar_line"
         style="@style/Line_Style" />
 
-    <ImageView
-        android:id="@+id/iv_head_author"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/head_author" />
-
-    <TextView
+    <Switch
+        android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_head_author"
+        android:layout_below="@+id/toolbar_line"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="@string/author_email" />
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:checked="true"
+        android:text="隐藏系统文件" />
+
+
 </RelativeLayout>

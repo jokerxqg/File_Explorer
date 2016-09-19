@@ -3,9 +3,16 @@
     <!-- 应用程序的主题 -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/toolbar_color</item>
+        <item name="colorPrimaryDark">@color/black</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorControlNormal">@color/black</item>
+    </style>
+
+    <!--activity 的dialog-->
+    <style name="ActivityDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/toolbar_color</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <!--toolbar字体的大小设置-->
@@ -32,9 +39,18 @@
         <item name="android:drawablePadding">15dp</item>
     </style>
 
+    <style name="Operate_Dialog_Style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginRight">1px</item>
+        <item name="android:layout_marginBottom">1px</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <!--扩展按钮的样式-->
     <style name="Extra_Button_Style">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_centerVertical">true</item>

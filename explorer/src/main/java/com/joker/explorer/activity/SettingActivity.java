@@ -9,14 +9,13 @@ import com.joker.explorer.R;
 
 import utils.FinishActivity;
 
-public class AboutMeActivity extends AppCompatActivity {
-
+public class SettingActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about_me);
+        setContentView(R.layout.activity_setting);
 
         initView();
     }
