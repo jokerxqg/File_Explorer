@@ -9,5 +9,4 @@ public class OperateCode {
     public static final int DELETE = 3;
     public static final int ORDER_AZ = 4;
     public static final int ORDER_OLD = 5;
-    public static final int ORDER_DEFAULT = 6;
 }

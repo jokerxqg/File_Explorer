@@ -2,14 +2,18 @@ package utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import com.joker.explorer.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.Files;
 import fixed.FileType;
+import task.ScanApk;
 
 /**
  * Created by joker on 2016-09-08.
@@ -17,7 +21,7 @@ import fixed.FileType;
  */
 public class ScanUtils {
     Context context;
-    private List<bean.File> list;
+    private List<Files> list;
 
     public ScanUtils(Context context) {
         this.context = context;
@@ -26,10 +30,14 @@ public class ScanUtils {
     /*
     * 扫描文件，参数 fileType 文件类型
     * */
-    public List<bean.File> scanFile(String fileType) {
-        if (list != null) {
+    public List<Files> scanFile(String fileType) {
+
+        if (list == null) {
+            list = new ArrayList<>();
+        } else {
             list.clear();
         }
+
         switch (fileType) {
             case FileType.VIDEO_FILE:
                 getVideoList();
@@ -40,20 +48,22 @@ public class ScanUtils {
             case FileType.MUSIC_FILE:
                 getMusicList();
                 break;
+            case FileType.APK_FILE:
+                new ScanApk().start();
+                list = ScanApk.getFiles();
+                break;
         }
 
         return list;
     }
 
     //获取视频文件
-    public List<bean.File> getVideoList() {
-        list = null;
+    public List<Files> getVideoList() {
         if (context != null) {
             Cursor cursor = context.getContentResolver().query(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null,
                     null, null);
             if (cursor != null) {
-                list = new ArrayList<bean.File>();
                 while (cursor.moveToNext()) {
                     int id = cursor.getInt(cursor
                             .getColumnIndexOrThrow(MediaStore.Video.Media._ID));
@@ -85,13 +95,13 @@ public class ScanUtils {
                             + album + "``" + "displayName==" + displayName + "``" + "mimeType==" + mimeType + "``" + "path==" + path + "``"
                             + "duration==" + duration + "``" + "size==" + size + "``" + "artist==" + artist + "``");
 
-                    bean.File file = new bean.File();
-                    file.setFileType(FileType.VIDEO_FILE);
-                    file.setIcon(R.mipmap.mz_ic_list_movie_small);
-                    file.setFilePath(path);
-                    file.setFileName(displayName);
-                    file.setFileSize(FileSizeUtils.convertStorage(size));
-                    list.add(file);
+                    Files videoFile = new Files();
+                    videoFile.setFileType(FileType.VIDEO_FILE);
+                    videoFile.setIcon(R.mipmap.mz_ic_list_movie_small);
+                    videoFile.setFilePath(path);
+                    videoFile.setFileName(displayName);
+                    videoFile.setFileSize(FileSizeUtils.convertStorage(size));
+                    list.add(videoFile);
                 }
                 cursor.close();
             }
@@ -100,13 +110,11 @@ public class ScanUtils {
     }
 
     public List<?> getImageList() {
-        list = null;
         if (context != null) {
             Cursor cursor = context.getContentResolver().query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null,
                     null, null);
             if (cursor != null) {
-                list = new ArrayList<bean.File>();
                 while (cursor.moveToNext()) {
                     int id = cursor
                             .getInt(cursor
@@ -127,13 +135,13 @@ public class ScanUtils {
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
 
-                    bean.File file = new bean.File();
-                    file.setFileType(FileType.VIDEO_FILE);
-                    file.setIcon(R.mipmap.mz_ic_list_photo_small);
-                    file.setFilePath(path);
-                    file.setFileName(displayName);
-                    file.setFileSize(FileSizeUtils.convertStorage(size));
-                    list.add(file);
+                    Files photoFile = new Files();
+                    photoFile.setFileType(FileType.VIDEO_FILE);
+                    photoFile.setIcon(R.mipmap.mz_ic_list_photo_small);
+                    photoFile.setFilePath(path);
+                    photoFile.setFileName(displayName);
+                    photoFile.setFileSize(FileSizeUtils.convertStorage(size));
+                    list.add(photoFile);
                 }
                 cursor.close();
             }
@@ -143,13 +151,11 @@ public class ScanUtils {
     }
 
     public List<?> getMusicList() {
-        list = null;
         if (context != null) {
             Cursor cursor = context.getContentResolver().query(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
                     null, null);
             if (cursor != null) {
-                list = new ArrayList<bean.File>();
                 while (cursor.moveToNext()) {
                     int id = cursor.getInt(cursor
                             .getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
@@ -178,13 +184,13 @@ public class ScanUtils {
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
 
-                    bean.File file = new bean.File();
-                    file.setFileType(FileType.VIDEO_FILE);
-                    file.setIcon(R.mipmap.mz_ic_list_music_small);
-                    file.setFilePath(path);
-                    file.setFileName(displayName);
-                    file.setFileSize(FileSizeUtils.convertStorage(size));
-                    list.add(file);
+                    Files musicFile = new Files();
+                    musicFile.setFileType(FileType.VIDEO_FILE);
+                    musicFile.setIcon(R.mipmap.mz_ic_list_music_small);
+                    musicFile.setFilePath(path);
+                    musicFile.setFileName(displayName);
+                    musicFile.setFileSize(FileSizeUtils.convertStorage(size));
+                    list.add(musicFile);
 
                 }
                 cursor.close();
@@ -192,4 +198,36 @@ public class ScanUtils {
         }
         return list;
     }
+
+    /*
+    * 参数 File f 根目录
+    * */
+    public List<Files> getApkList(File f) {
+        if (f.isFile()) {
+            String name_s = f.getName();
+            if (name_s.toLowerCase().endsWith(".apk")) {
+                Files apkFile = new Files();
+                apkFile.setFileType(FileType.APK_FILE);
+                apkFile.setFilePath(f.getAbsolutePath());// apk文件的绝对路劲
+                apkFile.setFileName(f.getName());
+                apkFile.setIcon(R.mipmap.filetype_apk);
+                try {
+                    apkFile.setFileSize(FileSizeUtils.convertStorage(FileSizeUtils.getFileSize(f)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                list.add(apkFile);
+            }
+        } else {
+            File[] files = f.listFiles();
+            if (files != null && files.length > 0) {
+                for (File file_str : files) {
+                    getApkList(file_str);
+                }
+            }
+        }
+        return list;
+    }
+
+
 }

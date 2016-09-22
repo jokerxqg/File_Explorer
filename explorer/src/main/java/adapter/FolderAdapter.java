@@ -75,7 +75,6 @@ public class FolderAdapter extends BaseAdapter {
         }
 
         final Folder folder = folderList.get(position);
-
         holder.tv_folderName.setText(folder.getFolderName());
         holder.tv_lastModified.setText(folder.getLastModified());
         holder.checkBox.setChecked(folder.isChecked());
@@ -85,13 +84,13 @@ public class FolderAdapter extends BaseAdapter {
         if (folder.isDirectory()) {
             imageId = R.mipmap.ic_folder;
             File[] files = new File(folder.getFolderPath()).listFiles();
-            if(files.length>0){
-                holder.tv_count.setText(files.length+" 项目");
-            }else {
+            if (files.length > 0) {
+                holder.tv_count.setText(files.length + " 项目");
+            } else {
                 holder.tv_count.setText("0 项目");
             }
 
-        }else if(folder.isFile()){
+        } else if (folder.isFile()) {
             holder.tv_count.setText(folder.getFileSize());
             imageId = FileUtils.changeFileIcon(fileType);
         } else {

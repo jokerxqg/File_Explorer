@@ -42,8 +42,6 @@
     <style name="Operate_Dialog_Style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:layout_marginRight">1px</item>
-        <item name="android:layout_marginBottom">1px</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/black</item>
     </style>

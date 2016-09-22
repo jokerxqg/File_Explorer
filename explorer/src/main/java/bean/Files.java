@@ -3,7 +3,7 @@ package bean;
 /**
  * Created by joker on 2016-09-12.
  */
-public class File {
+public class Files {
     private String fileName;
     private String filePath;
     private String fileSize;

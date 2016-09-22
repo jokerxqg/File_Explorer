@@ -23,7 +23,7 @@ public class OperateDialogActivity extends Activity implements View.OnClickListe
 
     private void findButtonView() {
         Integer[] buttonIds = new Integer[]{
-                R.id.btn_done_all, R.id.btn_cancel_all, R.id.btn_delete, R.id.btn_order_az, R.id.btn_old_new, R.id.btn_default_order};
+                R.id.btn_done_all, R.id.btn_cancel_all, R.id.btn_delete, R.id.btn_order_az, R.id.btn_old_new};
         for (int i = 0; i < buttonIds.length; i++) {
             Button button = (Button) findViewById(buttonIds[i]);
             button.setOnClickListener(this);
@@ -52,10 +52,6 @@ public class OperateDialogActivity extends Activity implements View.OnClickListe
                 break;
             case R.id.btn_old_new:
                 setResult(OperateCode.ORDER_OLD);
-                finish();
-                break;
-            case R.id.btn_default_order:
-                setResult(OperateCode.ORDER_DEFAULT);
                 finish();
                 break;
         }

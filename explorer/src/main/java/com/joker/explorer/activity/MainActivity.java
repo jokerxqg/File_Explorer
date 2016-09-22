@@ -1,11 +1,14 @@
 package com.joker.explorer.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -22,6 +25,7 @@ import fixed.Strings;
 import utils.FileSizeUtils;
 import utils.FinishActivity;
 import utils.JumpAct;
+import utils.PermissionsHelper;
 
 
 /*
@@ -34,18 +38,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RelativeLayout end_layout;
     //    显示手机存储信息的按钮
     private TextView tv_show;
-    //    所有文件
-    private Button btn_all_file;
-    private Button btn_about_me;
-    private Button btn_setting;
     JumpAct jumpAct;
     private FinishActivity finishActivity;
+
+    static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private PermissionsHelper permissionsHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
+        checkPermissions();
+    }
+
+    private void checkPermissions() {
+        permissionsHelper = new PermissionsHelper(MainActivity.this, PERMISSIONS);
+        if (permissionsHelper.checkAllPermissions(PERMISSIONS)) {
+            permissionsHelper.onDestroy();
+            //doSomething
+        } else {
+            //申请权限
+            permissionsHelper.startRequestNeedPermissions();
+        }
+        permissionsHelper.setonAllNeedPermissionsGrantedListener(new PermissionsHelper.onAllNeedPermissionsGrantedListener() {
+
+
+            @Override
+            public void onAllNeedPermissionsGranted() {
+                Log.d("test", "onAllNeedPermissionsGranted");
+            }
+
+            @Override
+            public void onPermissionsDenied() {
+              finish();
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionsHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        permissionsHelper.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -116,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 jumpShowFile(intentShowFile, FileType.ZIP_FILE);
                 break;
             case R.id.btn_text:
-                jumpShowFile(intentShowFile,FileType.TXT_FILE);
+                jumpShowFile(intentShowFile, FileType.TXT_FILE);
                 break;
             case R.id.btn_favorite:
                 jumpShowFile(intentShowFile, Strings.FAVORITE);

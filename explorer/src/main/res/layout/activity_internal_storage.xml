@@ -40,24 +40,39 @@
         android:layout_alignParentBottom="true"
         android:background="@color/toolbar_color">
 
-        <ImageButton
-            android:id="@+id/ic_fileOperate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="25dp"
-            android:background="@color/toolbar_color"
-            android:src="@mipmap/ic_apps_black_24dp" />
+        <RelativeLayout
+            android:id="@+id/rl_fileOperate"
+            android:layout_width="70dp"
+            android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/iv_newFolder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="25dp"
-            android:background="@color/toolbar_color"
-            android:src="@mipmap/ic_create_new_folder_black_24dp" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:background="@color/toolbar_color"
+                android:clickable="false"
+                android:src="@mipmap/ic_apps_black_24dp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_newFolder"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:background="@color/toolbar_color"
+                android:clickable="false"
+                android:src="@mipmap/ic_create_new_folder_black_24dp" />
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

@@ -30,7 +30,7 @@ import fixed.OperateCode;
 public class FileUtils {
 
     //    控制文件排序的变量
-    private static int orderCode = OperateCode.ORDER_DEFAULT;
+    private static int orderCode = OperateCode.ORDER_AZ;
     //    文件夹的集合
     private static List<Folder> folderList;
 
@@ -66,9 +66,6 @@ public class FileUtils {
                 return folderList;
             } else {
                 switch (orderCode) {
-                    case OperateCode.ORDER_DEFAULT:
-                        initFolderList(files);
-                        break;
                     case OperateCode.ORDER_OLD:
                         Arrays.sort(files, new Comparator<File>() {
                             public int compare(File f1, File f2) {
@@ -291,7 +288,7 @@ public class FileUtils {
                 case FileType.ZIP_FILE:
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    intent.setAction(android.content.Intent.ACTION_VIEW);
-//                    uri = Uri.fromFile(new File(filePath));
+//                    uri = Uri.fromFile(new Files(filePath));
 //                    intent.setDataAndType(uri, "*/*");
                     intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

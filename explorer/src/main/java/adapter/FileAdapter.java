@@ -13,17 +13,17 @@ import com.joker.explorer.R;
 
 import java.util.List;
 
-import bean.File;
+import bean.Files;
 
 /**
  * Created by joker on 2016-09-12.
  */
 public class FileAdapter extends BaseAdapter {
 
-    private List<File> fileList;
+    private List<Files> fileList;
     private LayoutInflater layoutInflater;
 
-    public FileAdapter(List<File> fileList, Context context) {
+    public FileAdapter(List<Files> fileList, Context context) {
         this.fileList = fileList;
         layoutInflater = layoutInflater.from(context);
     }
@@ -59,7 +59,7 @@ public class FileAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        File file = fileList.get(position);
+        Files file = fileList.get(position);
         holder.iv_fileIcon.setImageResource(file.getIcon());
         holder.checkBox.setChecked(file.isChecked());
         holder.tv_fileName.setText(file.getFileName());

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_done_all"
-        android:title="@string/delete" />
+        android:title="@string/done_all" />
     <item
         android:id="@+id/menu_cancel_done_all"
         android:title="@string/cancel_done_all" />
