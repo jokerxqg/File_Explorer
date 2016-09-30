@@ -1,7 +1,15 @@
 package utils;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
 
@@ -12,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.Files;
+import fixed.FileLists;
 import fixed.FileType;
-import task.ScanApk;
 
 /**
  * Created by joker on 2016-09-08.
- * 扫描手机中视频，音乐等文件的工具类
+ * 扫描手机中视频，音乐,和图片的工具类
  */
 public class ScanUtils {
     Context context;
@@ -34,23 +42,24 @@ public class ScanUtils {
 
         if (list == null) {
             list = new ArrayList<>();
-        } else {
-            list.clear();
         }
 
         switch (fileType) {
             case FileType.VIDEO_FILE:
+                list.clear();
                 getVideoList();
                 break;
             case FileType.PHOTO_FILE:
-                getImageList();
+                if(FileLists.getPhotoList()==null){
+                    getImageList();
+                }else {
+                    list = FileLists.getPhotoList();
+                }
+
                 break;
             case FileType.MUSIC_FILE:
+                list.clear();
                 getMusicList();
-                break;
-            case FileType.APK_FILE:
-                new ScanApk().start();
-                list = ScanApk.getFiles();
                 break;
         }
 
@@ -97,7 +106,7 @@ public class ScanUtils {
 
                     Files videoFile = new Files();
                     videoFile.setFileType(FileType.VIDEO_FILE);
-                    videoFile.setIcon(R.mipmap.mz_ic_list_movie_small);
+                    videoFile.setIcon(context.getResources().getDrawable(R.mipmap.mz_ic_list_movie_small));
                     videoFile.setFilePath(path);
                     videoFile.setFileName(displayName);
                     videoFile.setFileSize(FileSizeUtils.convertStorage(size));
@@ -109,7 +118,7 @@ public class ScanUtils {
         return list;
     }
 
-    public List<?> getImageList() {
+    public List<Files> getImageList() {
         if (context != null) {
             Cursor cursor = context.getContentResolver().query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null,
@@ -137,7 +146,7 @@ public class ScanUtils {
 
                     Files photoFile = new Files();
                     photoFile.setFileType(FileType.VIDEO_FILE);
-                    photoFile.setIcon(R.mipmap.mz_ic_list_photo_small);
+                    photoFile.setIcon(getImageThumbnail(path,80,80));
                     photoFile.setFilePath(path);
                     photoFile.setFileName(displayName);
                     photoFile.setFileSize(FileSizeUtils.convertStorage(size));
@@ -147,9 +156,13 @@ public class ScanUtils {
             }
 
         }
+        FileLists.setPhotoList(list);
         return list;
     }
 
+    /*
+    * 获取音乐文件
+    * */
     public List<?> getMusicList() {
         if (context != null) {
             Cursor cursor = context.getContentResolver().query(
@@ -186,7 +199,7 @@ public class ScanUtils {
 
                     Files musicFile = new Files();
                     musicFile.setFileType(FileType.VIDEO_FILE);
-                    musicFile.setIcon(R.mipmap.mz_ic_list_music_small);
+                    musicFile.setIcon(context.getResources().getDrawable(R.mipmap.mz_ic_list_music_small));
                     musicFile.setFilePath(path);
                     musicFile.setFileName(displayName);
                     musicFile.setFileSize(FileSizeUtils.convertStorage(size));
@@ -202,7 +215,7 @@ public class ScanUtils {
     /*
     * 参数 File f 根目录
     * */
-    public List<Files> getApkList(File f) {
+   /* public List<Files> getApkList(File f) {
         if (f.isFile()) {
             String name_s = f.getName();
             if (name_s.toLowerCase().endsWith(".apk")) {
@@ -227,7 +240,70 @@ public class ScanUtils {
             }
         }
         return list;
+    }*/
+
+    /**
+     * 获取apk包的图标
+     *
+     * @param absPath apk包的绝对路径
+     */
+    public Drawable getApkIcon(String absPath) {
+
+        PackageManager pm = context.getPackageManager();
+        PackageInfo pkgInfo = pm.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES);
+        if (pkgInfo != null) {
+            ApplicationInfo appInfo = pkgInfo.applicationInfo;
+        /* 必须加这两句，不然下面icon获取是default icon而不是应用包的icon */
+            appInfo.sourceDir = absPath;
+            appInfo.publicSourceDir = absPath;
+        /* icon1和icon2其实是一样的 */
+//            Drawable icon = pm.getApplicationIcon(appInfo);// 得到图标信息
+            Drawable icon2 = appInfo.loadIcon(pm);
+            return icon2;
+
+        }
+        return null;
     }
 
+    /**
+     * 根据指定的图像路径和大小来获取缩略图 此方法有两点好处： 1.
+     * 使用较小的内存空间，第一次获取的bitmap实际上为null，只是为了读取宽度和高度，
+     * 第二次读取的bitmap是根据比例压缩过的图像，第三次读取的bitmap是所要的缩略图。 2.
+     * 缩略图对于原图像来讲没有拉伸，这里使用了2.2版本的新工具ThumbnailUtils，使 用这个工具生成的图像不会被拉伸。
+     *
+     * @param imagePath 图像的路径
+     * @param width     指定输出图像的宽度
+     * @param height    指定输出图像的高度
+     * @return 生成的缩略图 drawable
+     */
+    public static Drawable getImageThumbnail(String imagePath, int width, int height) {
+        Bitmap bitmap = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        // 获取这个图片的宽和高，注意此处的bitmap为null
+        bitmap = BitmapFactory.decodeFile(imagePath, options);
+        options.inJustDecodeBounds = false; // 设为 false
+        // 计算缩放比
+        int h = options.outHeight;
+        int w = options.outWidth;
+        int beWidth = w / width;
+        int beHeight = h / height;
+        int be = 1;
+        if (beWidth < beHeight) {
+            be = beWidth;
+        } else {
+            be = beHeight;
+        }
+        if (be <= 0) {
+            be = 1;
+        }
+        options.inSampleSize = be;
+        // 重新读入图片，读取缩放后的bitmap，注意这次要把options.inJustDecodeBounds 设为 false
+        bitmap = BitmapFactory.decodeFile(imagePath, options);
+        // 利用ThumbnailUtils来创建缩略图，这里要指定要缩放哪个Bitmap对象
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
+                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        return new BitmapDrawable(bitmap);
+    }
 
 }

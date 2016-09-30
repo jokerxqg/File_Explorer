@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,7 +29,6 @@ import bean.Folder;
 import fixed.FileType;
 import fixed.OperateCode;
 import utils.FileUtils;
-import utils.FinishActivity;
 /*
 * 内部存储的act
 * */
@@ -142,8 +140,6 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
      * 初始化控件 findviewbyid 以及绑定监听事件
      * */
     void initViews() {
-        FinishActivity finishActivity = FinishActivity.getInstance();
-        finishActivity.addActivity(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);

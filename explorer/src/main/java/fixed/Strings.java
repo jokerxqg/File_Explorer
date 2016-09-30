@@ -12,5 +12,4 @@ public class Strings {
     public static final String TEXT = "文档";
     public static final String FAVORITE = "收藏";
     public static final String LAST_ADD = "最近添加";
-
 }

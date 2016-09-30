@@ -1,9 +1,5 @@
 package com.joker.explorer.activity;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,22 +7,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.joker.explorer.R;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import adapter.FileAdapter;
 import bean.Files;
+import fixed.FileLists;
 import fixed.FileType;
-import task.ScanApk;
+import task.AsyncScan;
 import utils.ScanUtils;
 
 /*
-* 显示各类文件集合的act
+* 显示各类文件的activity
 * */
 public class ShowFileListActivity extends AppCompatActivity {
 
@@ -35,7 +31,11 @@ public class ShowFileListActivity extends AppCompatActivity {
     List<Files> listFiles;
     private ListView listView;
     private FileAdapter adapter;
+    private TextView tv_loading, tv_notFile;
     private ImageView iv_refresh;
+    //当前显示的文件类型
+    String type = "";
+    private AsyncScan apkScan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +43,9 @@ public class ShowFileListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_file_list);
         initView();
         getFileList();
-        showList();
     }
 
-    //初始化控件
+    //初始化控件以及绑定监听
     private void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -66,19 +65,27 @@ public class ShowFileListActivity extends AppCompatActivity {
         iv_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                notifyFileSystemChanged();
-                getFileList();
-                showList();
-                Toast.makeText(ShowFileListActivity.this, "刷新成功", Toast.LENGTH_SHORT).show();
+                switch (type) {
+                    case FileType.APK_FILE:
+                        refreshScanAPK();
+                        break;
+                }
             }
         });
+
+        tv_loading = (TextView) findViewById(R.id.tv_loading);
+        tv_notFile = (TextView) findViewById(R.id.tv_notFile);
 
         listView = (ListView) findViewById(R.id.list_view);
     }
 
 
-    //根据不同文件类型获取文件集合
+    /*根据不同文件类型获取文件集合
+    * 获取从主界面的跳转意图的文件类别
+    * 来获取各类别的文件集合
+    * */
     private void getFileList() {
+        iv_refresh.setVisibility(View.INVISIBLE);
         ScanUtils scanUtils = new ScanUtils(this);
         fileType = getIntent().getStringExtra("FileType");
         listFiles = new ArrayList<>();
@@ -87,25 +94,40 @@ public class ShowFileListActivity extends AppCompatActivity {
             switch (fileType) {
                 case FileType.VIDEO_FILE:
                     listFiles = scanUtils.scanFile(fileType);
+                    showList();
                     break;
                 case FileType.PHOTO_FILE:
-                    listFiles = scanUtils.scanFile(fileType);
+                    if (FileLists.getPhotoList() == null) {
+                        apkScan = new AsyncScan(tv_loading, tv_notFile, this, listView);
+                        apkScan.execute(FileType.PHOTO_FILE);
+                    } else {
+                        listFiles = FileLists.getPhotoList();
+                        showList();
+                    }
                     break;
                 case FileType.MUSIC_FILE:
                     listFiles = scanUtils.scanFile(fileType);
+                    showList();
                     break;
                 case FileType.APK_FILE:
-                    Thread scanApkThread = new ScanApk();
-                    scanApkThread.start();
-                    listFiles = ScanApk.getFiles();
-
+                    type = FileType.APK_FILE;
+                    iv_refresh.setVisibility(View.VISIBLE);
+                    if (FileLists.getApkList() == null) {
+                        apkScan = new AsyncScan(tv_loading, tv_notFile, this, listView);
+                        apkScan.execute(FileType.APK_FILE);
+                    } else {
+                        listFiles = FileLists.getApkList();
+                        showList();
+                    }
                     break;
             }
         }
     }
 
-    //如果集合不为空，显示list view
+    //如果集合不为空且有内容，显示list view
     private void showList() {
+        tv_notFile.setVisibility(View.INVISIBLE);
+
         if (listFiles.size() > 0 & listFiles != null) {
             if (adapter == null) {
                 adapter = new FileAdapter(listFiles, this);
@@ -115,26 +137,9 @@ public class ShowFileListActivity extends AppCompatActivity {
             }
 
         } else {
-            iv_refresh.setVisibility(View.INVISIBLE);
+            tv_notFile.setVisibility(View.VISIBLE);
         }
     }
-
-    private void notifyFileSystemChanged() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent mediaScanIntent = new Intent(
-                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            Uri contentUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory().getAbsolutePath())); //out is your output file
-            mediaScanIntent.setData(contentUri);
-            this.sendBroadcast(mediaScanIntent);
-        } else {
-            sendBroadcast(new Intent(
-                    Intent.ACTION_MEDIA_MOUNTED,
-                    Uri.parse("file://"
-                            + Environment.getExternalStorageDirectory())));
-        }
-
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -142,5 +147,9 @@ public class ShowFileListActivity extends AppCompatActivity {
         finish();
     }
 
-
+    //刷新扫描apk文件
+    void refreshScanAPK() {
+        AsyncScan apkScan = new AsyncScan(tv_loading, tv_notFile, this, listView);
+        apkScan.execute(FileType.APK_FILE);
+    }
 }

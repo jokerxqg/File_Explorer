@@ -7,8 +7,6 @@ import android.view.View;
 
 import com.joker.explorer.R;
 
-import utils.FinishActivity;
-
 public class AboutMeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -23,8 +21,6 @@ public class AboutMeActivity extends AppCompatActivity {
 
     //    初始化控件以及绑定监听
     private void initView() {
-        FinishActivity finshActivity = FinishActivity.getInstance();
-        finshActivity.addActivity(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

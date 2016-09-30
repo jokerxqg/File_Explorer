@@ -1,5 +1,7 @@
 package bean;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by joker on 2016-09-12.
  */
@@ -8,7 +10,7 @@ public class Files {
     private String filePath;
     private String fileSize;
     private boolean checked = false;
-    private int icon;
+    private Drawable icon;
     private String fileType;
 
     public String getFileType() {
@@ -51,11 +53,11 @@ public class Files {
         this.checked = checked;
     }
 
-    public int getIcon() {
+    public Drawable getIcon() {
         return icon;
     }
 
-    public void setIcon(int icon) {
+    public void setIcon(Drawable icon) {
         this.icon = icon;
     }
 }

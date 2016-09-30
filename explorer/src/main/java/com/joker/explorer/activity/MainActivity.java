@@ -4,8 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joker.explorer.R;
 
@@ -23,8 +22,6 @@ import java.io.File;
 import fixed.FileType;
 import fixed.Strings;
 import utils.FileSizeUtils;
-import utils.FinishActivity;
-import utils.JumpAct;
 import utils.PermissionsHelper;
 
 
@@ -38,8 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RelativeLayout end_layout;
     //    显示手机存储信息的按钮
     private TextView tv_show;
-    JumpAct jumpAct;
-    private FinishActivity finishActivity;
 
     static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private PermissionsHelper permissionsHelper;
@@ -71,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onPermissionsDenied() {
-              finish();
+                finish();
             }
         });
     }
@@ -92,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //    初始化控件以及设置监听
     void initViews() {
-        finishActivity = FinishActivity.getInstance();
-        finishActivity.addActivity(this);
-        jumpAct = new JumpAct(this);
 
         // button的id数组
         int[] buttonIds = new int[]{R.id.btn_video, R.id.btn_photo, R.id.btn_music, R.id.btn_apk, R.id.btn_zip, R.id.btn_text, R.id.btn_favorite, R.id.btn_download, R.id.btn_last_add, R.id.btn_all_file, R.id.btn_about_me, R.id.btn_setting};
@@ -119,8 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     * */
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finishActivity.finshAllActivities();
+        finish();
     }
 
 
@@ -130,16 +121,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intentShowFile = new Intent(this, ShowFileListActivity.class);
         switch (v.getId()) {
             case R.id.end_layout:
-                jumpAct.jumpToSystemStorage();
+                Intent intentToStorage = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
+                startActivity(intentToStorage);
                 break;
             case R.id.btn_all_file:
-                jumpAct.jumpToInternalStorage();
+                Intent intentToFile = new Intent(this, InternalStorageActivity.class);
+                startActivity(intentToFile);
                 break;
             case R.id.btn_about_me:
-                jumpAct.jumpToAboutMe();
+                Intent intentToAbout = new Intent(this, AboutMeActivity.class);
+                startActivity(intentToAbout);
                 break;
             case R.id.btn_setting:
-                jumpAct.jumpToSetting();
+                Intent intentToSetting = new Intent(this, SettingActivity.class);
+                startActivity(intentToSetting);
                 break;
             case R.id.btn_video:
                 jumpShowFile(intentShowFile, FileType.VIDEO_FILE);
