@@ -28,6 +28,14 @@ public class FileAdapter extends BaseAdapter {
         layoutInflater = layoutInflater.from(context);
     }
 
+    public void setFileList(List<Files> fileList) {
+        this.fileList = fileList;
+    }
+
+    public List<Files> getFileList() {
+        return fileList;
+    }
+
     @Override
     public int getCount() {
         return fileList.size();
@@ -44,7 +52,7 @@ public class FileAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -65,8 +73,20 @@ public class FileAdapter extends BaseAdapter {
         holder.tv_fileName.setText(file.getFileName());
         holder.tv_fileSize.setText(file.getFileSize());
 
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.checkBox.isChecked()) {
+                    fileList.get(position).setChecked(true);
+                } else {
+                    fileList.get(position).setChecked(false);
+                }
+            }
+        });
+
         return convertView;
     }
+
 
     class ViewHolder {
         CheckBox checkBox;

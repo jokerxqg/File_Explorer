@@ -146,7 +146,7 @@ public class ScanUtils {
 
                     Files photoFile = new Files();
                     photoFile.setFileType(FileType.VIDEO_FILE);
-                    photoFile.setIcon(getImageThumbnail(path,80,80));
+                    photoFile.setIcon(getImageThumbnail(path,120,120));
                     photoFile.setFilePath(path);
                     photoFile.setFileName(displayName);
                     photoFile.setFileSize(FileSizeUtils.convertStorage(size));
@@ -257,9 +257,9 @@ public class ScanUtils {
             appInfo.sourceDir = absPath;
             appInfo.publicSourceDir = absPath;
         /* icon1和icon2其实是一样的 */
-//            Drawable icon = pm.getApplicationIcon(appInfo);// 得到图标信息
-            Drawable icon2 = appInfo.loadIcon(pm);
-            return icon2;
+            Drawable icon = pm.getApplicationIcon(appInfo);// 得到图标信息
+//            Drawable icon2 = appInfo.loadIcon(pm);
+            return icon;
 
         }
         return null;

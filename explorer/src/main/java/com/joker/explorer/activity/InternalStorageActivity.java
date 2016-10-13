@@ -88,8 +88,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
    * */
     @Override
     public void onBackPressed() {
-
-        if (currentPath.equals(Environment.getExternalStorageDirectory().getAbsolutePath())|currentPath.equals(downPath)) {
+        if (currentPath.equals(Environment.getExternalStorageDirectory().getAbsolutePath()) | currentPath.equals(downPath)) {
             finish();
         } else {
             currentPath = new File(currentPath).getParentFile().getAbsolutePath();
@@ -99,6 +98,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
 
     }
 
+    //上下文菜单
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         clickFolder = folderList.get(itemLongClickPosition);
@@ -337,7 +337,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     * 参数 done 为true就全选，false 取消全选
     * */
     void setDoneAll(boolean done) {
-        folderList = adapter.getFolderList();
+
         if (!folderList.isEmpty()) {
             for (Folder folder : folderList) {
                 folder.setChecked(done);
@@ -347,7 +347,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     }
 
     /*
-        * listview条目的点击事件
+        * list view条目的点击事件
         * 如果是个文件，就根据文件类型来获取打开文件的意图
         * 如果是没有识别的文件就弹一个吐司
         * 如果是个目录，就进入目录

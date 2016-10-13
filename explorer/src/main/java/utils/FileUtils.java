@@ -114,7 +114,6 @@ public class FileUtils {
                 Folder folder = new Folder();
                 folder.setFolderName(file.getName());
                 folder.setLastModified(FileUtils.formatTime(file.lastModified()));
-//
                 folder.setFileType(judgeFileType(file.getName()));
                 folder.setIsFile(file.isFile());
                 folder.setIsDirectory(file.isDirectory());
@@ -168,7 +167,6 @@ public class FileUtils {
 
     public static void makeDirectory(String path) {
         File file = new File(path);
-
         if (!file.exists()) {
             file.mkdir();
         }

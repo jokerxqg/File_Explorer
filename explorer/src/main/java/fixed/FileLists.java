@@ -12,6 +12,24 @@ import bean.Files;
 public class FileLists {
     private static List<Files> apkList;
     private static List<Files> photoList;
+    private static List<Files> zipList;
+    private static List<Files> documentList;
+
+    public static List<Files> getDocumentList() {
+        return documentList;
+    }
+
+    public static void setDocumentList(List<Files> documentList) {
+        FileLists.documentList = documentList;
+    }
+
+    public static List<Files> getZipList() {
+        return zipList;
+    }
+
+    public static void setZipList(List<Files> zipList) {
+        FileLists.zipList = zipList;
+    }
 
     public static List<Files> getPhotoList() {
         return photoList;
