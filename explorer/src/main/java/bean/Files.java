@@ -1,5 +1,6 @@
 package bean;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 /**
@@ -10,7 +11,7 @@ public class Files {
     private String filePath;
     private String fileSize;
     private boolean checked = false;
-    private Drawable icon;
+    private Bitmap icon;
     private String fileType;
 
     public String getFileType() {
@@ -53,11 +54,11 @@ public class Files {
         this.checked = checked;
     }
 
-    public Drawable getIcon() {
+    public Bitmap getIcon() {
         return icon;
     }
 
-    public void setIcon(Drawable icon) {
+    public void setIcon(Bitmap icon) {
         this.icon = icon;
     }
 }

@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_cached_black_24dp" />
+            android:src="@mipmap/ic_cached_black_24dp"
+            android:visibility="invisible" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -38,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="扫描中..."
+        android:text="正在为您扫描，请耐心等候..."
         android:textColor="@color/black"
         android:visibility="invisible" />
 

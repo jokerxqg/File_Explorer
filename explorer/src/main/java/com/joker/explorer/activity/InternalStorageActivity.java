@@ -93,7 +93,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         } else {
             currentPath = new File(currentPath).getParentFile().getAbsolutePath();
             readAndShow(currentPath);
-            list_view.setSelection(itemPosition);
+            list_view.setSelection(itemPosition - 5);
         }
 
     }
@@ -357,7 +357,6 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         itemPosition = position;
         Folder folder = folderList.get(position);
         if (folder.isFile()) {
-
             Intent intent = FileUtils.getFileIntent(folder.getFileType(), folder.getFolderPath());
             if (intent.getBooleanExtra("ERROR", false)) {
                 Toast.makeText(InternalStorageActivity.this, "文件不可用", Toast.LENGTH_SHORT).show();

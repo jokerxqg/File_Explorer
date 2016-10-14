@@ -208,7 +208,7 @@
                     android:layout_toRightOf="@id/iv_storage">
 
                     <TextView
-                        android:id="@+id/tv_show"
+                        android:id="@+id/tv_showSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"

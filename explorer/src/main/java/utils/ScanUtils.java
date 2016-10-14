@@ -1,5 +1,7 @@
 package utils;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -9,13 +11,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
 import com.joker.explorer.R;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +39,11 @@ import fixed.FileType;
 public class ScanUtils {
     Context context;
     private List<Files> list;
+    private Bitmap musicBitmap;
 
     public ScanUtils(Context context) {
         this.context = context;
+        musicBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.mz_ic_list_music_small);
     }
 
     /*
@@ -50,12 +61,9 @@ public class ScanUtils {
                 getVideoList();
                 break;
             case FileType.PHOTO_FILE:
-                if(FileLists.getPhotoList()==null){
-                    getImageList();
-                }else {
-                    list = FileLists.getPhotoList();
-                }
-
+                list.clear();
+                getPhotoList();
+                FileLists.setPhotoList(list);
                 break;
             case FileType.MUSIC_FILE:
                 list.clear();
@@ -69,14 +77,16 @@ public class ScanUtils {
     //获取视频文件
     public List<Files> getVideoList() {
         if (context != null) {
-            Cursor cursor = context.getContentResolver().query(
+            ContentResolver contentResolver = context.getContentResolver();
+            Cursor cursor = contentResolver.query(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null,
                     null, null);
+            BitmapFactory.Options options = new BitmapFactory.Options();
             if (cursor != null) {
                 while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor
+                    int videoId = cursor.getInt(cursor
                             .getColumnIndexOrThrow(MediaStore.Video.Media._ID));
-                    String title = cursor
+                  /*  String title = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
                     String album = cursor
@@ -85,28 +95,26 @@ public class ScanUtils {
                     String artist = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST));
-                    String displayName = cursor
-                            .getString(cursor
-                                    .getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME));
                     String mimeType = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE));
+                    long duration = cursor
+                            .getInt(cursor
+                                    .getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));*/
+                    String displayName = cursor
+                            .getString(cursor
+                                    .getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME));
                     String path = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
-                    long duration = cursor
-                            .getInt(cursor
-                                    .getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                     long size = cursor
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
-                    System.out.println("id==" + id + "``" + "title==" + title + "``" + "album=="
-                            + album + "``" + "displayName==" + displayName + "``" + "mimeType==" + mimeType + "``" + "path==" + path + "``"
-                            + "duration==" + duration + "``" + "size==" + size + "``" + "artist==" + artist + "``");
 
                     Files videoFile = new Files();
                     videoFile.setFileType(FileType.VIDEO_FILE);
-                    videoFile.setIcon(context.getResources().getDrawable(R.mipmap.mz_ic_list_movie_small));
+                    Bitmap videoBitmap = MediaStore.Video.Thumbnails.getThumbnail(contentResolver, videoId, MediaStore.Images.Thumbnails.MICRO_KIND, options);
+                    videoFile.setIcon(videoBitmap);
                     videoFile.setFilePath(path);
                     videoFile.setFileName(displayName);
                     videoFile.setFileSize(FileSizeUtils.convertStorage(size));
@@ -118,35 +126,32 @@ public class ScanUtils {
         return list;
     }
 
-    public List<Files> getImageList() {
+    public List<Files> getPhotoList() {
         if (context != null) {
-            Cursor cursor = context.getContentResolver().query(
+            ContentResolver contentResolver = context.getContentResolver();
+            Cursor cursor = contentResolver.query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null,
                     null, null);
+            BitmapFactory.Options options = new BitmapFactory.Options();
             if (cursor != null) {
                 while (cursor.moveToNext()) {
-                    int id = cursor
+                    int imageId = cursor
                             .getInt(cursor
                                     .getColumnIndexOrThrow(MediaStore.Images.Media._ID));
-                    String title = cursor
-                            .getString(cursor
-                                    .getColumnIndexOrThrow(MediaStore.Images.Media.TITLE));
                     String path = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
                     String displayName = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
-                    String mimeType = cursor
-                            .getString(cursor
-                                    .getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE));
                     long size = cursor
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
 
                     Files photoFile = new Files();
-                    photoFile.setFileType(FileType.VIDEO_FILE);
-                    photoFile.setIcon(getImageThumbnail(path,120,120));
+                    photoFile.setFileType(FileType.PHOTO_FILE);
+                    Bitmap photoBitmap = MediaStore.Images.Thumbnails.getThumbnail(contentResolver, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, options);
+                    photoFile.setIcon(photoBitmap);
                     photoFile.setFilePath(path);
                     photoFile.setFileName(displayName);
                     photoFile.setFileSize(FileSizeUtils.convertStorage(size));
@@ -163,43 +168,46 @@ public class ScanUtils {
     /*
     * 获取音乐文件
     * */
-    public List<?> getMusicList() {
+    public List<Files> getMusicList() {
         if (context != null) {
             Cursor cursor = context.getContentResolver().query(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
                     null, null);
             if (cursor != null) {
                 while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor
+                    int musicId = cursor.getInt(cursor
                             .getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+                    String album = cursor
+                            .getString(cursor
+                                    .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+                    int albumId = Integer.parseInt(album);
+                    /*
                     String title = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-                    String album = cursor
-                            .getString(cursor
-                                    .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM));
+
                     String artist = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+                    String mimeType = cursor
+                            .getString(cursor
+                                    .getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE));
+                    long duration = cursor
+                            .getInt(cursor
+                                    .getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));*/
                     String path = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
                     String displayName = cursor
                             .getString(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
-                    String mimeType = cursor
-                            .getString(cursor
-                                    .getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE));
-                    long duration = cursor
-                            .getInt(cursor
-                                    .getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
                     long size = cursor
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
 
                     Files musicFile = new Files();
                     musicFile.setFileType(FileType.VIDEO_FILE);
-                    musicFile.setIcon(context.getResources().getDrawable(R.mipmap.mz_ic_list_music_small));
+                    musicFile.setIcon(getArtwork(musicId, albumId, true));
                     musicFile.setFilePath(path);
                     musicFile.setFileName(displayName);
                     musicFile.setFileSize(FileSizeUtils.convertStorage(size));
@@ -212,98 +220,97 @@ public class ScanUtils {
         return list;
     }
 
-    /*
-    * 参数 File f 根目录
-    * */
-   /* public List<Files> getApkList(File f) {
-        if (f.isFile()) {
-            String name_s = f.getName();
-            if (name_s.toLowerCase().endsWith(".apk")) {
-                Files apkFile = new Files();
-                apkFile.setFileType(FileType.APK_FILE);
-                apkFile.setFilePath(f.getAbsolutePath());// apk文件的绝对路劲
-                apkFile.setFileName(f.getName());
-                apkFile.setIcon(R.mipmap.filetype_apk);
+    public Bitmap getArtwork(long song_id, long album_id,
+                             boolean allowdefault) {
+        if (album_id < 0) {
+            // This is something that is not in the database, so get the album art directly
+            // from the file.
+            if (song_id >= 0) {
+                Bitmap bm = getArtworkFromFile(song_id, -1);
+                if (bm != null) {
+                    return bm;
+                }
+            }
+            if (allowdefault) {
+                return getDefaultArtwork();
+            }
+            return null;
+        }
+        ContentResolver res = context.getContentResolver();
+        Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
+        if (uri != null) {
+            InputStream in = null;
+            try {
+                in = res.openInputStream(uri);
+                return BitmapFactory.decodeStream(in, null, sBitmapOptions);
+            } catch (FileNotFoundException ex) {
+                // The album art thumbnail does not actually exist. Maybe the user deleted it, or
+                // maybe it never existed to begin with.
+                Bitmap bm = getArtworkFromFile(song_id, album_id);
+                if (bm != null) {
+                    if (bm.getConfig() == null) {
+                        bm = bm.copy(Bitmap.Config.RGB_565, false);
+                        if (bm == null && allowdefault) {
+                            return getDefaultArtwork();
+                        }
+                    }
+                } else if (allowdefault) {
+                    bm = getDefaultArtwork();
+                }
+                return bm;
+            } finally {
                 try {
-                    apkFile.setFileSize(FileSizeUtils.convertStorage(FileSizeUtils.getFileSize(f)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                list.add(apkFile);
-            }
-        } else {
-            File[] files = f.listFiles();
-            if (files != null && files.length > 0) {
-                for (File file_str : files) {
-                    getApkList(file_str);
+                    if (in != null) {
+                        in.close();
+                    }
+                } catch (IOException ex) {
                 }
             }
         }
-        return list;
-    }*/
 
-    /**
-     * 获取apk包的图标
-     *
-     * @param absPath apk包的绝对路径
-     */
-    public Drawable getApkIcon(String absPath) {
-
-        PackageManager pm = context.getPackageManager();
-        PackageInfo pkgInfo = pm.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES);
-        if (pkgInfo != null) {
-            ApplicationInfo appInfo = pkgInfo.applicationInfo;
-        /* 必须加这两句，不然下面icon获取是default icon而不是应用包的icon */
-            appInfo.sourceDir = absPath;
-            appInfo.publicSourceDir = absPath;
-        /* icon1和icon2其实是一样的 */
-            Drawable icon = pm.getApplicationIcon(appInfo);// 得到图标信息
-//            Drawable icon2 = appInfo.loadIcon(pm);
-            return icon;
-
-        }
         return null;
     }
 
-    /**
-     * 根据指定的图像路径和大小来获取缩略图 此方法有两点好处： 1.
-     * 使用较小的内存空间，第一次获取的bitmap实际上为null，只是为了读取宽度和高度，
-     * 第二次读取的bitmap是根据比例压缩过的图像，第三次读取的bitmap是所要的缩略图。 2.
-     * 缩略图对于原图像来讲没有拉伸，这里使用了2.2版本的新工具ThumbnailUtils，使 用这个工具生成的图像不会被拉伸。
-     *
-     * @param imagePath 图像的路径
-     * @param width     指定输出图像的宽度
-     * @param height    指定输出图像的高度
-     * @return 生成的缩略图 drawable
-     */
-    public static Drawable getImageThumbnail(String imagePath, int width, int height) {
-        Bitmap bitmap = null;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        // 获取这个图片的宽和高，注意此处的bitmap为null
-        bitmap = BitmapFactory.decodeFile(imagePath, options);
-        options.inJustDecodeBounds = false; // 设为 false
-        // 计算缩放比
-        int h = options.outHeight;
-        int w = options.outWidth;
-        int beWidth = w / width;
-        int beHeight = h / height;
-        int be = 1;
-        if (beWidth < beHeight) {
-            be = beWidth;
-        } else {
-            be = beHeight;
+    private Bitmap getArtworkFromFile(long songId, long albumId) {
+        Bitmap bm = null;
+        byte[] art = null;
+        String path = null;
+        if (albumId < 0 && songId < 0) {
+            throw new IllegalArgumentException("Must specify an album or a song id");
         }
-        if (be <= 0) {
-            be = 1;
+        try {
+            if (albumId < 0) {
+                Uri uri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
+                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+                if (pfd != null) {
+                    FileDescriptor fd = pfd.getFileDescriptor();
+                    bm = BitmapFactory.decodeFileDescriptor(fd);
+                }
+            } else {
+                Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
+                ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+                if (pfd != null) {
+                    FileDescriptor fd = pfd.getFileDescriptor();
+                    bm = BitmapFactory.decodeFileDescriptor(fd);
+                }
+            }
+        } catch (FileNotFoundException ex) {
+
         }
-        options.inSampleSize = be;
-        // 重新读入图片，读取缩放后的bitmap，注意这次要把options.inJustDecodeBounds 设为 false
-        bitmap = BitmapFactory.decodeFile(imagePath, options);
-        // 利用ThumbnailUtils来创建缩略图，这里要指定要缩放哪个Bitmap对象
-        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
-                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-        return new BitmapDrawable(bitmap);
+        if (bm != null) {
+            mCachedBit = bm;
+        }
+        return bm;
     }
+
+    private Bitmap getDefaultArtwork() {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inPreferredConfig = Bitmap.Config.RGB_565;
+        return BitmapFactory.decodeResource(context.getResources(), R.mipmap.mz_ic_list_music_small);
+    }
+
+    private final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+    private final BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();
+    private Bitmap mCachedBit = null;
 
 }

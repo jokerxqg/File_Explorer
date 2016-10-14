@@ -14,21 +14,24 @@
 
     <ImageView
         android:id="@+id/iv_fileIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="3dp"
         android:layout_toRightOf="@id/checkBox"
         android:src="@mipmap/mz_ic_list_movie_small" />
 
     <TextView
         android:id="@+id/tv_fileName"
-        android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/iv_fileIcon"
-        android:text="测试.mp4" />
+        android:text="测试.mp4"
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tv_fileSize"

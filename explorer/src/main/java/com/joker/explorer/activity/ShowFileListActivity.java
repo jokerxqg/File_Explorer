@@ -27,9 +27,7 @@ import task.AsyncScan;
 import utils.FileUtils;
 import utils.ScanUtils;
 
-/**
- *
- */
+
 /*
 * 显示各类文件的activity
 * */
@@ -42,8 +40,6 @@ public class ShowFileListActivity extends AppCompatActivity implements AdapterVi
     private FileAdapter adapter;
     private TextView tv_loading, tv_notFile;
     private ImageView iv_refresh;
-
-    private AsyncScan asyncScan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +73,10 @@ public class ShowFileListActivity extends AppCompatActivity implements AdapterVi
             public void onClick(View v) {
                 switch (fileType) {
                     case FileType.APK_FILE:
-                        refreshScanAPK();
+
                         break;
                     case FileType.PHOTO_FILE:
-                        refreshScanPhoto();
+
                         break;
                 }
             }
@@ -98,56 +94,68 @@ public class ShowFileListActivity extends AppCompatActivity implements AdapterVi
     * 来获取各类别的文件集合
     * */
     private void getFileList() throws ExecutionException, InterruptedException {
-        iv_refresh.setVisibility(View.INVISIBLE);
-        ScanUtils scanUtils = new ScanUtils(this);
         fileType = getIntent().getStringExtra("FileType");
         listFiles = new ArrayList<>();
         if (fileType != null) {
             toolbar.setTitle(fileType);
             switch (fileType) {
                 case FileType.VIDEO_FILE:
-                    listFiles = scanUtils.scanFile(fileType);
-                    showList();
+                    if (FileLists.getVideoList() == null) {
+                        tv_loading.setVisibility(View.VISIBLE);
+                    } else {
+                        tv_loading.setVisibility(View.INVISIBLE);
+                        listFiles = FileLists.getVideoList();
+                        showList();
+                    }
                     break;
                 case FileType.PHOTO_FILE:
                     if (FileLists.getPhotoList() == null) {
-                        listFiles = new AsyncScan(tv_loading, tv_notFile, this).execute(FileType.PHOTO_FILE).get();
+                        tv_loading.setVisibility(View.VISIBLE);
+                    } else {
+                        tv_loading.setVisibility(View.INVISIBLE);
+                        listFiles = FileLists.getPhotoList();
+                        showList();
+                    }
+                  /*  if (FileLists.getPhotoList() == null) {
+                        listFiles = scanUtils.scanFile(fileType);
                         showList();
                     } else {
                         listFiles = FileLists.getPhotoList();
                         showList();
-                    }
-
+                    }*/
                     break;
                 case FileType.MUSIC_FILE:
-                    listFiles = scanUtils.scanFile(fileType);
-                    showList();
+                    if (FileLists.getMusicList() == null) {
+                        tv_loading.setVisibility(View.VISIBLE);
+                    } else {
+                        tv_loading.setVisibility(View.INVISIBLE);
+                        listFiles = FileLists.getMusicList();
+                        showList();
+                    }
                     break;
                 case FileType.APK_FILE:
                     if (FileLists.getApkList() == null) {
-                        listFiles = new AsyncScan(tv_loading, tv_notFile, this).execute(FileType.APK_FILE).get();
-                        showList();
+                        tv_loading.setVisibility(View.VISIBLE);
                     } else {
+                        tv_loading.setVisibility(View.INVISIBLE);
                         listFiles = FileLists.getApkList();
                         showList();
                     }
                     break;
                 case FileType.ZIP_FILE:
                     if (FileLists.getZipList() == null) {
-                        listFiles = new AsyncScan(tv_loading, tv_notFile, this).execute(FileType.ZIP_FILE).get();
-                        showList();
-
+                        tv_loading.setVisibility(View.VISIBLE);
                     } else {
-                        System.out.println("直接获取zip");
+                        tv_loading.setVisibility(View.INVISIBLE);
                         listFiles = FileLists.getZipList();
                         showList();
                     }
                     break;
                 case FileType.TXT_FILE:
                     if (FileLists.getDocumentList() == null) {
-                        listFiles = new AsyncScan(tv_loading, tv_notFile, this).execute(FileType.TXT_FILE).get();
-                        showList();
+                        tv_loading.setVisibility(View.VISIBLE);
                     } else {
+                        tv_loading.setVisibility(View.INVISIBLE);
                         listFiles = FileLists.getDocumentList();
                         showList();
                     }
@@ -178,17 +186,6 @@ public class ShowFileListActivity extends AppCompatActivity implements AdapterVi
         finish();
     }
 
-    //刷新扫描apk文件
-    void refreshScanAPK() {
-        AsyncScan apkScan = new AsyncScan(tv_loading, tv_notFile, this);
-        apkScan.execute(FileType.APK_FILE);
-    }
-
-    //重新扫描图片
-    void refreshScanPhoto() {
-        AsyncScan apkScan = new AsyncScan(tv_loading, tv_notFile, this);
-        apkScan.execute(FileType.PHOTO_FILE);
-    }
 
     //list view 的条目点击事件
     @Override
@@ -259,6 +256,5 @@ public class ShowFileListActivity extends AppCompatActivity implements AdapterVi
             adapter.notifyDataSetChanged();
         }
 
-        System.out.println("!!!" + listFiles.size());
     }
 }

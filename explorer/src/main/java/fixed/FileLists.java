@@ -10,8 +10,27 @@ import bean.Files;
  */
 
 public class FileLists {
-    private static List<Files> apkList;
+    private static List<Files> videoList;
     private static List<Files> photoList;
+    private static List<Files> musicList;
+
+    public static List<Files> getVideoList() {
+        return videoList;
+    }
+
+    public static void setVideoList(List<Files> videoList) {
+        FileLists.videoList = videoList;
+    }
+
+    public static List<Files> getMusicList() {
+        return musicList;
+    }
+
+    public static void setMusicList(List<Files> musicList) {
+        FileLists.musicList = musicList;
+    }
+
+    private static List<Files> apkList;
     private static List<Files> zipList;
     private static List<Files> documentList;
 

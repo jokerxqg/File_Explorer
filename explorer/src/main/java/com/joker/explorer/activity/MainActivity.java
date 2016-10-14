@@ -7,12 +7,13 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joker.explorer.R;
 
@@ -21,6 +22,7 @@ import java.io.File;
 
 import fixed.FileType;
 import fixed.Strings;
+import task.AsyncScan;
 import utils.FileSizeUtils;
 import utils.PermissionsHelper;
 
@@ -30,11 +32,12 @@ import utils.PermissionsHelper;
 * */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar toolbar;
     //    显示可用存储的底部布局
     private RelativeLayout end_layout;
     //    显示手机存储信息的按钮
-    private TextView tv_show;
+    private TextView tv_showSize;
+
+    private ImageView iv_search;
 
     static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private PermissionsHelper permissionsHelper;
@@ -45,8 +48,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initViews();
         checkPermissions();
+        new AsyncScan(this).execute(FileType.VIDEO_FILE);
+        new AsyncScan(this).execute(FileType.PHOTO_FILE);
+        new AsyncScan(this).execute(FileType.MUSIC_FILE);
+        new AsyncScan(this).execute(FileType.APK_FILE);
+        new AsyncScan(this).execute(FileType.ZIP_FILE);
+        new AsyncScan(this).execute(FileType.TXT_FILE);
+
     }
 
+
+    /**
+     * 当系统高于6.0的时候，则请求权限
+     */
     private void checkPermissions() {
         permissionsHelper = new PermissionsHelper(MainActivity.this, PERMISSIONS);
         if (permissionsHelper.checkAllPermissions(PERMISSIONS)) {
@@ -85,7 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    //    初始化控件以及设置监听
+    /**
+     * 初始化视图
+     */
     void initViews() {
 
         // button的id数组
@@ -95,20 +111,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Button button = (Button) findViewById(buttonIds[i]);
             button.setOnClickListener(this);
         }
+        iv_search = (ImageView) findViewById(R.id.iv_search);
+        iv_search.setOnClickListener(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        tv_show = (TextView) findViewById(R.id.tv_show);
-        tv_show.setText("可用" + FileSizeUtils.getAvailableInternalStorageString());
+        tv_showSize = (TextView) findViewById(R.id.tv_showSize);
+        tv_showSize.setText("可用" + FileSizeUtils.getAvailableInternalStorageString());
         end_layout = (RelativeLayout) findViewById(R.id.end_layout);
         end_layout.setOnClickListener(this);
 
 
     }
 
-    /*
-    * 当按返回按钮是调用的方法，当导航视图打开的时候，讲关闭导航视图
-    * */
+
     @Override
     public void onBackPressed() {
         finish();
@@ -118,8 +132,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //主界面控件的点击监听
     @Override
     public void onClick(View v) {
-        Intent intentShowFile = new Intent(this, ShowFileListActivity.class);
         switch (v.getId()) {
+            case R.id.iv_search:
+                Toast.makeText(this, "搜索", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.end_layout:
                 Intent intentToStorage = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
                 startActivity(intentToStorage);
@@ -137,25 +153,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intentToSetting);
                 break;
             case R.id.btn_video:
-                jumpShowFile(intentShowFile, FileType.VIDEO_FILE);
+                jumpShowFile(FileType.VIDEO_FILE);
                 break;
             case R.id.btn_photo:
-                jumpShowFile(intentShowFile, FileType.PHOTO_FILE);
+                jumpShowFile(FileType.PHOTO_FILE);
                 break;
             case R.id.btn_music:
-                jumpShowFile(intentShowFile, FileType.MUSIC_FILE);
+                jumpShowFile(FileType.MUSIC_FILE);
                 break;
             case R.id.btn_apk:
-                jumpShowFile(intentShowFile, FileType.APK_FILE);
+                jumpShowFile(FileType.APK_FILE);
                 break;
             case R.id.btn_zip:
-                jumpShowFile(intentShowFile, FileType.ZIP_FILE);
+                jumpShowFile(FileType.ZIP_FILE);
                 break;
             case R.id.btn_text:
-                jumpShowFile(intentShowFile, FileType.TXT_FILE);
+                jumpShowFile(FileType.TXT_FILE);
                 break;
             case R.id.btn_favorite:
-                jumpShowFile(intentShowFile, Strings.FAVORITE);
+                jumpShowFile(Strings.FAVORITE);
                 break;
             case R.id.btn_download:
                 Intent intent = new Intent(this, InternalStorageActivity.class);
@@ -164,13 +180,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.btn_last_add:
-                jumpShowFile(intentShowFile, Strings.LAST_ADD);
+                jumpShowFile(Strings.LAST_ADD);
                 break;
 
         }
     }
 
-    void jumpShowFile(Intent intentShowFile, String fileType) {
+
+    /**
+     * 跳转得到显示文件的act
+     *
+     * @param fileType 要显示的文件的文件类别
+     */
+    void jumpShowFile(String fileType) {
+        Intent intentShowFile = new Intent(this, ShowFileListActivity.class);
         intentShowFile.putExtra("FileType", fileType);
         startActivity(intentShowFile);
     }

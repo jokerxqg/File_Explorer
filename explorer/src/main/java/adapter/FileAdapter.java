@@ -68,10 +68,10 @@ public class FileAdapter extends BaseAdapter {
         }
 
         Files file = fileList.get(position);
-        holder.iv_fileIcon.setImageDrawable(file.getIcon());
         holder.checkBox.setChecked(file.isChecked());
         holder.tv_fileName.setText(file.getFileName());
         holder.tv_fileSize.setText(file.getFileSize());
+        holder.iv_fileIcon.setImageBitmap(file.getIcon());
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
