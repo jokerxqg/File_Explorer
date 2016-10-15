@@ -69,7 +69,12 @@ public class FileAdapter extends BaseAdapter {
 
         Files file = fileList.get(position);
         holder.checkBox.setChecked(file.isChecked());
-        holder.tv_fileName.setText(file.getFileName());
+        String fileName = file.getFileName();
+        if(fileName.length()>32){
+            String endName = fileName.substring(fileName.length()-8,fileName.length());
+            fileName = fileName.substring(0,22)+"..."+endName;
+        }
+        holder.tv_fileName.setText(fileName);
         holder.tv_fileSize.setText(file.getFileSize());
         holder.iv_fileIcon.setImageBitmap(file.getIcon());
 

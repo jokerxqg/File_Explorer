@@ -31,6 +31,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/iv_fileIcon"
         android:text="测试.mp4"
+        android:paddingBottom="10dp"
         android:textColor="@color/black" />
 
     <TextView

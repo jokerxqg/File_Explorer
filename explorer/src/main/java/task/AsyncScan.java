@@ -172,7 +172,10 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
                     videoFile.setFilePath(path);
                     videoFile.setFileName(displayName);
                     videoFile.setFileSize(FileSizeUtils.convertStorage(size));
-                    list.add(videoFile);
+                    if (new File(path).exists()) {
+                        list.add(videoFile);
+                    }
+
                 }
                 cursor.close();
             }
@@ -213,7 +216,9 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
                     photoFile.setFilePath(path);
                     photoFile.setFileName(displayName);
                     photoFile.setFileSize(FileSizeUtils.convertStorage(size));
-                    list.add(photoFile);
+                    if (new File(path).exists()) {
+                        list.add(photoFile);
+                    }
                 }
                 cursor.close();
             }
@@ -269,8 +274,9 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
                     musicFile.setFilePath(path);
                     musicFile.setFileName(displayName);
                     musicFile.setFileSize(FileSizeUtils.convertStorage(size));
-                    list.add(musicFile);
-
+                    if (new File(path).exists()) {
+                        list.add(musicFile);
+                    }
                 }
                 cursor.close();
             }

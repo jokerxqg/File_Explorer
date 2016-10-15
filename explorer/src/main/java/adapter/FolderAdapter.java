@@ -75,7 +75,12 @@ public class FolderAdapter extends BaseAdapter {
         }
 
         final Folder folder = folderList.get(position);
-        holder.tv_folderName.setText(folder.getFolderName());
+        String name = folder.getFolderName();
+        if (name.length() > 30) {
+            String endName = name.substring(name.length() - 8, name.length());
+            name = name.substring(0, 18) + "..." + endName;
+        }
+        holder.tv_folderName.setText(name);
         holder.tv_lastModified.setText(folder.getLastModified());
         holder.checkBox.setChecked(folder.isChecked());
         String fileType = folder.getFileType();
