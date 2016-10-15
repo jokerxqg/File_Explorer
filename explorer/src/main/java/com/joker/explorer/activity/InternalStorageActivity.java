@@ -40,7 +40,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     private RelativeLayout rl_fileOperate;
     //    新建一个目录的按钮
     private RelativeLayout rl_newFolder;
-    //    显示文件链表的listview
+    //    显示文件链表的list view
     private ListView list_view;
     //给适配器的原始数据
     private List<Folder> folderList;

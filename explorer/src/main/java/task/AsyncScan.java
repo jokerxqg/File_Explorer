@@ -126,7 +126,9 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
         super.onProgressUpdate(values);
     }
 
-    //通过Media 获取视频
+    /**
+     * @return
+     */
     public List<Files> getVideoList() {
         if (context != null) {
             ContentResolver contentResolver = context.getContentResolver();
@@ -178,6 +180,10 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
         return list;
     }
 
+
+    /**
+     * @return
+     */
     public List<Files> getPhotoList() {
         if (context != null) {
             ContentResolver contentResolver = context.getContentResolver();
@@ -217,9 +223,10 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
         return list;
     }
 
-    /*
-  * 获取音乐文件
-  * */
+
+    /**
+     * @return
+     */
     public List<Files> getMusicList() {
         if (context != null) {
             Cursor cursor = context.getContentResolver().query(
@@ -256,9 +263,8 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
                     long size = cursor
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
-
                     Files musicFile = new Files();
-                    musicFile.setFileType(FileType.VIDEO_FILE);
+                    musicFile.setFileType(FileType.MUSIC_FILE);
                     musicFile.setIcon(getArtwork(musicId, albumId, true));
                     musicFile.setFilePath(path);
                     musicFile.setFileName(displayName);

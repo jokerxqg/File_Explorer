@@ -132,6 +132,11 @@
 
         </android.support.v7.widget.GridLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/dark_gray" />
+
 
         <View
             android:layout_width="match_parent"
@@ -161,15 +166,14 @@
                     android:id="@+id/btn_about_me"
                     style="@style/Extra_Button_Style"
                     android:layout_toRightOf="@id/btn_all_file"
-                    android:drawableTop="@mipmap/ic_about_me"
+                    android:drawableTop="@mipmap/ic_remote"
                     android:text="@string/about_me" />
 
 
                 <Button
                     android:id="@+id/btn_setting"
                     style="@style/Extra_Button_Style"
-                    android:drawablePadding="3dp"
-                    android:drawableTop="@mipmap/ic_setting"
+                    android:drawableTop="@mipmap/ic_cloud"
                     android:text="@string/setting" />
 
             </LinearLayout>
