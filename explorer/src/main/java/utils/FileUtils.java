@@ -176,7 +176,7 @@ public class FileUtils {
     /*
     * 根据文件后缀名判断文件是什么类型
     * */
-    static String judgeFileType(String fileName) {
+    public static String judgeFileType(String fileName) {
         String fileType = "";
 //        获取后缀名
         String suffixStr = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()).toLowerCase();
@@ -321,6 +321,9 @@ public class FileUtils {
         if (!fileType.isEmpty()) {
 
             switch (fileType) {
+                case FileType.FOLDER:
+                    imageId = R.mipmap.ic_folder;
+                    break;
                 case FileType.APK_FILE:
                     imageId = R.mipmap.filetype_apk;
                     break;

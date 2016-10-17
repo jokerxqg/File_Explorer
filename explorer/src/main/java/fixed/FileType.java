@@ -14,5 +14,6 @@ public class FileType {
     public static final String DOC_FILE = "doc";
     public static final String EXCEL_FILE = "excel";
     public static final String PPT_FILE = "ppt";
+    public static final String FOLDER = "folder";
     public static final String ERROR_FILE = "error";
 }

@@ -29,7 +29,10 @@
             android:name=".activity.OperateDialogActivity"
             android:theme="@style/ActivityDialog" />
         <activity android:name=".activity.SettingActivity" />
-        <activity android:name=".activity.ShowFileListActivity"></activity>
+        <activity android:name=".activity.ShowFileListActivity" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
     </application>
 
 </manifest>

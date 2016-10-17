@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_search:
-                Toast.makeText(this, "搜索", Toast.LENGTH_SHORT).show();
+                Intent intentToSearch = new Intent(this, SearchActivity.class);
+                startActivity(intentToSearch);
                 break;
             case R.id.end_layout:
                 Intent intentToStorage = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);

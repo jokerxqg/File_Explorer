@@ -15,11 +15,6 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <!--toolbar字体的大小设置-->
-    <style name="Toolbar_Title_Text">
-        <item name="android:textSize">19sp</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
 
     <!--toolbar下面的那条线的样式-->
     <style name="Line_Style">

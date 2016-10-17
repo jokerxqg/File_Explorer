@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -154,6 +155,8 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         rl_fileOperate.setOnClickListener(this);
         rl_newFolder = (RelativeLayout) findViewById(R.id.rl_newFolder);
         rl_newFolder.setOnClickListener(this);
+        ImageView iv_search = (ImageView) findViewById(R.id.iv_search);
+        iv_search.setOnClickListener(this);
 
         tv_notFile = (TextView) findViewById(R.id.tv_notFile);
 
@@ -266,10 +269,13 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
                 Intent intent = new Intent(this, OperateDialogActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
                 break;
-
             case R.id.rl_newFolder:
                 initDialog("新建文件夹", R.id.rl_newFolder, null);
                 editDialog.show();
+                break;
+            case R.id.iv_search:
+                Intent intentToSearch = new Intent(this, SearchActivity.class);
+                startActivity(intentToSearch);
                 break;
 
             default:
@@ -380,12 +386,12 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         tv_notFile.setVisibility(View.INVISIBLE);
         File file = new File(currentPath);
         folderList = FileUtils.readSubDirectory(file);
-        if (adapter == null) {
-            adapter = new FolderAdapter(folderList, this);
-            list_view.setAdapter(adapter);
-        } else {
+//        if (adapter == null) {
+        adapter = new FolderAdapter(folderList, this);
+        list_view.setAdapter(adapter);
+      /*  } else {
             refreshAdapter();
-        }
+        }*/
 
         if (folderList.size() == 0) {
             tv_notFile.setVisibility(View.VISIBLE);
