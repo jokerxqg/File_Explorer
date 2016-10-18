@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new AsyncScan(this).execute(FileType.APK_FILE);
         new AsyncScan(this).execute(FileType.ZIP_FILE);
         new AsyncScan(this).execute(FileType.TXT_FILE);
+        new AsyncScan(this).execute(FileType.LAST_MODIFIED);
 
     }
 
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.btn_last_add:
-                jumpShowFile(Strings.LAST_ADD);
+                jumpShowFile(FileType.LAST_MODIFIED);
                 break;
 
         }

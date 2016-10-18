@@ -1,6 +1,10 @@
 package utils;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import com.joker.explorer.R;
@@ -309,6 +313,51 @@ public class FileUtils {
         }
 
         return intent;
+    }
+
+    public static Bitmap getBitmapIcon(String fileType, Context context) {
+        Resources resources = context.getResources();
+        Bitmap bitmap = null;
+
+        if (!fileType.isEmpty()) {
+
+            switch (fileType) {
+                case FileType.APK_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_apk);
+                    break;
+                case FileType.DOC_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_doc);
+                    break;
+                case FileType.EXCEL_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_excel);
+                    break;
+                case FileType.PPT_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_ppt);
+                    break;
+                case FileType.MUSIC_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_music);
+                    break;
+                case FileType.PHOTO_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_photo);
+                    break;
+                case FileType.VIDEO_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_video);
+                    break;
+                case FileType.TXT_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_txt);
+                    break;
+                case FileType.ZIP_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_zip);
+                    break;
+
+                case FileType.ERROR_FILE:
+                    bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_error);
+                    break;
+
+            }
+        }
+
+        return bitmap;
     }
 
     /*

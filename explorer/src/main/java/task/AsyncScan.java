@@ -29,7 +29,10 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import adapter.FileAdapter;
@@ -37,6 +40,7 @@ import bean.Files;
 import fixed.FileLists;
 import fixed.FileType;
 import utils.FileSizeUtils;
+import utils.FileUtils;
 import utils.ScanUtils;
 
 
@@ -54,7 +58,9 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
     private List<Files> apkList;
     private List<Files> zipList;
     private List<Files> documentList;
+    private List<Files> lastModifiedList;
     private Bitmap zipBitmap, docBitmap, excelBitmap, pptBitmap;
+    private Calendar calendar;
 
 
     /*
@@ -63,9 +69,8 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
     public AsyncScan(Context context) {
         this.context = context;
         list = new ArrayList<>();
-        apkList = new ArrayList<>();
-        zipList = new ArrayList<>();
-        documentList = new ArrayList<>();
+        lastModifiedList = new ArrayList<>();
+        calendar = Calendar.getInstance();
     }
 
     //执行前的操作
@@ -99,16 +104,24 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
                 FileLists.setMusicList(list);
                 break;
             case FileType.APK_FILE:
+                apkList = new ArrayList<>();
                 list = getApkList(homeFile);
                 FileLists.setApkList(list);
                 break;
             case FileType.ZIP_FILE:
+                zipList = new ArrayList<>();
                 list = getZipList(homeFile);
                 FileLists.setZipList(list);
                 break;
             case FileType.TXT_FILE:
+                documentList = new ArrayList<>();
                 list = getDocumentList(homeFile);
                 FileLists.setDocumentList(list);
+                break;
+            case FileType.LAST_MODIFIED:
+                documentList = new ArrayList<>();
+                list = getLastModifiedList(homeFile);
+                FileLists.setLastModifiedList(list);
                 break;
         }
         return list;
@@ -470,6 +483,44 @@ public class AsyncScan extends AsyncTask<String, Integer, List<Files>> {
         }
 
         return documentList;
+    }
+
+    private List<Files> getLastModifiedList(File f) {
+        if (f.isFile()) {
+            String fileName = f.getName();
+            if (!FileType.ERROR_FILE.equals(FileUtils.judgeFileType(fileName))) {
+                Date fileDate = new Date(f.lastModified());
+
+                Long currentTime = new Date().getTime();
+                calendar.setTimeInMillis(currentTime);//设置为日历时间
+                Date endDate = calendar.getTime();
+                calendar.setTime(endDate);
+                calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
+                if (fileDate.after(calendar.getTime())) {
+                    Files files = new Files();
+                    String fileType = FileUtils.judgeFileType(fileName);
+                    files.setFileType(fileType);
+                    files.setFilePath(f.getAbsolutePath());
+                    files.setFileName(fileName);
+                    try {
+                        files.setFileSize(FileSizeUtils.convertStorage(FileSizeUtils.getFileSize(f)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    files.setIcon(FileUtils.getBitmapIcon(fileType, context));
+                    lastModifiedList.add(files);
+
+                }
+            }
+
+        } else {
+            File[] files = f.listFiles();
+            for (File file : files) {
+                getLastModifiedList(file);
+            }
+        }
+
+        return lastModifiedList;
     }
 
     /**

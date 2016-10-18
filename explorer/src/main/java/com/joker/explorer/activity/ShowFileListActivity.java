@@ -160,6 +160,15 @@ public class ShowFileListActivity extends AppCompatActivity implements AdapterVi
                         showList();
                     }
                     break;
+                case FileType.LAST_MODIFIED:
+                    if (FileLists.getLastModifiedList() == null) {
+                        tv_loading.setVisibility(View.VISIBLE);
+                    } else {
+                        tv_loading.setVisibility(View.INVISIBLE);
+                        listFiles = FileLists.getLastModifiedList();
+                        showList();
+                    }
+                    break;
             }
         }
     }

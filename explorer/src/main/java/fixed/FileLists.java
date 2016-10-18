@@ -13,6 +13,15 @@ public class FileLists {
     private static List<Files> videoList;
     private static List<Files> photoList;
     private static List<Files> musicList;
+    private static List<Files> lastModifiedList;
+
+    public static List<Files> getLastModifiedList() {
+        return lastModifiedList;
+    }
+
+    public static void setLastModifiedList(List<Files> lastModifiedList) {
+        FileLists.lastModifiedList = lastModifiedList;
+    }
 
     public static List<Files> getVideoList() {
         return videoList;

@@ -123,7 +123,7 @@
                 style="@style/Grid_Style"
                 android:layout_marginBottom="0dp"
                 android:drawableTop="@mipmap/filesystem_grid_last_add"
-                android:text="@string/last_add"
+                android:text="@string/last_modified"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal|fill_vertical"
                 app:layout_rowWeight="1" />

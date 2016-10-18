@@ -20,7 +20,7 @@
     <string name="zip">压缩包</string>
     <string name="favorite">收藏</string>
     <string name="download">下载</string>
-    <string name="last_add">最近添加</string>
+    <string name="last_modified">最近修改</string>
     <string name="all_file">全部文件</string>
     <string name="about_me">关于作者</string>
     <string name="setting">设置</string>
