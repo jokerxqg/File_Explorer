@@ -173,7 +173,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 jumpShowFile(FileType.TXT_FILE);
                 break;
             case R.id.btn_favorite:
-                jumpShowFile(Strings.FAVORITE);
+                Intent intentToFavorite = new Intent(this, FavoriteFolderActivity.class);
+                startActivity(intentToFavorite);
                 break;
             case R.id.btn_download:
                 Intent intent = new Intent(this, InternalStorageActivity.class);

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_favorite_folder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.joker.explorer.activity.FavoriteFolderActivity">
+
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar_color"
+        app:navigationIcon="@mipmap/ic_arrow_back_black_24dp"
+        app:title="@string/favorite" />
+
+    <View
+        android:id="@+id/toolbar_line"
+        style="@style/Line_Style" />
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_line"></ListView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="无收藏文件"
+        android:textColor="@color/black"
+        android:visibility="invisible" />
+
+
+</RelativeLayout>

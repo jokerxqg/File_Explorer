@@ -27,6 +27,7 @@ import java.util.List;
 
 import adapter.FolderAdapter;
 import bean.Folder;
+import database.FavoriteHelper;
 import fixed.FileType;
 import fixed.OperateCode;
 import utils.FileUtils;
@@ -64,6 +65,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
 
     private final static int REQUEST_CODE = 1;
     private String downPath;
+    private String favoriteFolderPath;
 
 
     @Override
@@ -73,8 +75,12 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         initViews();
         Intent intent = getIntent();
         downPath = intent.getStringExtra("DownPath");
+        favoriteFolderPath = intent.getStringExtra("FavoriteFolder");
         if (downPath != null) {
             currentPath = downPath;
+            readAndShow(currentPath);
+        } else if (favoriteFolderPath != null) {
+            currentPath = favoriteFolderPath;
             readAndShow(currentPath);
         } else {
             currentPath = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -89,7 +95,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
    * */
     @Override
     public void onBackPressed() {
-        if (currentPath.equals(Environment.getExternalStorageDirectory().getAbsolutePath()) | currentPath.equals(downPath)) {
+        if (currentPath.equals(Environment.getExternalStorageDirectory().getAbsolutePath()) | currentPath.equals(downPath) | currentPath.equals(favoriteFolderPath)) {
             finish();
         } else {
             currentPath = new File(currentPath).getParentFile().getAbsolutePath();
@@ -110,6 +116,9 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
         }
         menu.add(1, 1, 1, "删除");
         menu.add(2, 2, 2, "重命名");
+        if (clickFolder.isDirectory()) {
+            menu.add(3, 3, 3, "添加至收藏");
+        }
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -117,6 +126,7 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
     * 上下文菜单点击的监听
     * 1 是删除
     * 2 是重命名
+    * 3 是添加至收藏
     **/
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -132,6 +142,15 @@ public class InternalStorageActivity extends AppCompatActivity implements View.O
                 editDialog.show();
                 readAndShow(currentPath);
                 list_view.setSelection(itemLongClickPosition);
+                break;
+            case 3:
+                FavoriteHelper favoriteHelper = new FavoriteHelper(this);
+                if (!favoriteHelper.isExist(folder.getFolderPath())) {
+                    favoriteHelper.insert(folder.getFolderName(), folder.getFolderPath());
+                    Toast.makeText(this, "收藏成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "已经收藏过了", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
         return super.onContextItemSelected(item);

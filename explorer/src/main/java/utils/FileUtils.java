@@ -33,6 +33,7 @@ import fixed.OperateCode;
  */
 public class FileUtils {
 
+    public static boolean hindSystemFile = true;
     //    控制文件排序的变量
     private static int orderCode = OperateCode.ORDER_AZ;
     //    文件夹的集合
@@ -100,6 +101,7 @@ public class FileUtils {
                                 return o1.getName().compareTo(o2.getName());
                             }
                         });
+                        System.out.println("@@@@@@@" + files.length);
                         initFolderList(files);
                         break;
                 }
@@ -114,7 +116,25 @@ public class FileUtils {
     //    装载目录的集合，初始化集合数据
     static void initFolderList(File[] files) {
         for (File file : files) {
-            if (!file.getName().subSequence(0, 1).equals(".")) {
+            if (hindSystemFile) {
+                if (!file.getName().subSequence(0, 1).equals(".")) {
+                    Folder folder = new Folder();
+                    folder.setFolderName(file.getName());
+                    folder.setLastModified(FileUtils.formatTime(file.lastModified()));
+                    folder.setFileType(judgeFileType(file.getName()));
+                    folder.setIsFile(file.isFile());
+                    folder.setIsDirectory(file.isDirectory());
+                    folder.setFolderPath(file.getAbsolutePath());
+                    if (file.isFile()) {
+                        try {
+                            folder.setFileSize(FileSizeUtils.convertStorage(FileSizeUtils.getFileSize(file)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    folderList.add(folder);
+                }
+            } else {
                 Folder folder = new Folder();
                 folder.setFolderName(file.getName());
                 folder.setLastModified(FileUtils.formatTime(file.lastModified()));
@@ -131,7 +151,7 @@ public class FileUtils {
                 }
                 folderList.add(folder);
             }
-
+            System.out.println(folderList.size());
         }
     }
 
@@ -139,6 +159,7 @@ public class FileUtils {
     /*
     * 删除文件或文件夹的方法
     * */
+
     public static void deleteDirectory(File file) {
         if (file.exists()) {
             if (file.isFile()) {
@@ -349,7 +370,6 @@ public class FileUtils {
                 case FileType.ZIP_FILE:
                     bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_zip);
                     break;
-
                 case FileType.ERROR_FILE:
                     bitmap = BitmapFactory.decodeResource(resources, R.mipmap.filetype_error);
                     break;

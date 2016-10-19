@@ -4,8 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.joker.explorer.R;
+
+import utils.FileUtils;
 
 public class SettingActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -25,6 +29,19 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        final Switch hind = (Switch) findViewById(R.id.hindSystemFile);
+        hind.setChecked(FileUtils.hindSystemFile);
+
+        hind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (hind.isChecked()) {
+                    FileUtils.hindSystemFile = true;
+                } else {
+                    FileUtils.hindSystemFile = false;
+                }
             }
         });
     }

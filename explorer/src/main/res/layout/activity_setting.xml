@@ -19,14 +19,14 @@
         style="@style/Line_Style" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/hindSystemFile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_line"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:padding="10dp"
         android:checked="true"
+        android:padding="10dp"
         android:text="隐藏系统文件" />
 
 

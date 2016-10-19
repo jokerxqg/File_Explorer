@@ -89,8 +89,21 @@ public class FolderAdapter extends BaseAdapter {
         if (folder.isDirectory()) {
             imageId = R.mipmap.ic_folder;
             File[] files = new File(folder.getFolderPath()).listFiles();
+            int childItem = 0;
+            if (FileUtils.hindSystemFile) {
+                for (File file : files) {
+                    if (!file.getName().subSequence(0, 1).equals(".")) {
+                        childItem = childItem + 1;
+                    }
+                }
+            } else {
+                for (File file : files) {
+                    childItem += 1;
+                }
+            }
+
             if (files.length > 0) {
-                holder.tv_count.setText(files.length + " 项目");
+                holder.tv_count.setText(childItem + " 项目");
             } else {
                 holder.tv_count.setText("0 项目");
             }
